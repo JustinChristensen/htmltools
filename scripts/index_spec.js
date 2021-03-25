@@ -1,27 +1,36 @@
+#!/usr/bin/env node
+
+const yargs = require('yargs')
+const { hideBin } = require('yargs/helpers')
 const { get } = require('https');
 const { existsSync, readFileSync, writeFileSync, mkdirSync } = require('fs');
 const { basename } = require('path');
 const { parse: parseHtml } = require('parse5');
 
-const indexUrl = 'https://html.spec.whatwg.org/multipage/indices.html';
+const config = {
+    indexUrl: 'https://html.spec.whatwg.org/multipage/indices.html',
+    tmpDir: 'tmp',
+    dataDir: 'data',
+    dropList: [
+        'MathML',
+        'SVG',
+        'autonomous custom elements'
+    ]
+};    
 
-const tmpDir = 'tmp';
-const tmpIndexHtmlFile = `${tmpDir}/${basename(indexUrl)}`;
+config.tmpIndexHtmlFile = `${config.tmpDir}/${basename(config.indexUrl)}`;
+config.elementsDataFile = `${config.dataDir}/elements.txt`;
+config.attributesDataFile = `${config.dataDir}/attributes.txt`;
 
-const dataDir = 'data';
-const elementsDataFile = `${dataDir}/elements.txt`;
-const attributesDataFile = `${dataDir}/attributes.txt`;
+config.elementsSqlFile = `${config.dataDir}/elements.sql`;
+config.attributesSqlFile = `${config.dataDir}/attributes.sql`;
 
-const dropRE = new RegExp([
-    'MathML',
-    'SVG',
-    'autonomous custom elements'
-].join('|'));
+const dropRE = new RegExp(config.dropList.join('|'));
+const dropStrings = arr => arr.map(v => v.replace(dropRE, '').trim());
 
 const mkdirp = path => mkdirSync(path, { recursive: true });
 
 const uniq = arr => arr.filter((v, i) => arr.indexOf(v) === i);
-const dropStrings = arr => arr.map(v => v.replace(dropRE, '').trim());
 
 const cleanUp = arr => {
     arr = uniq(arr);
@@ -46,10 +55,10 @@ const getUrl = url => new Promise((resolve, reject) => {
     }).on('error', reject)
 });
 
-const saveIndexHtmlFile = body => writeFileSync(tmpIndexHtmlFile, body);
+const saveIndexHtmlFile = body => writeFileSync(config.tmpIndexHtmlFile, body);
 
 const readIndexDoc = () => {
-    const indexHtml = readFileSync(tmpIndexHtmlFile, { encoding: 'utf8' });
+    const indexHtml = readFileSync(config.tmpIndexHtmlFile, { encoding: 'utf8' });
     return parseHtml(indexHtml)
 }
 
@@ -78,26 +87,16 @@ const eachRow = (table, fn = noop) => {
 
 const text = textNodes => textNodes.map(node => node.value);
 
-const colText = (table, i) => {
-    const textNodes = [];
+const getColData = (table, i) => {
+    const data = [];
 
     eachRow(table, row => {
         const colTextNodes = selectText(row.childNodes[i]);
-        text(colTextNodes).join('').split(',').forEach(n => textNodes.push(n.trim()));
+        text(colTextNodes).join('').split(',').forEach(n => data.push(n.trim()));
     });
 
-    return textNodes;
+    return cleanUp(data);
 }
-
-const saveElementsDataFile = elementsTable => {
-    const ELEMENT = 0;
-    writeFileSync(elementsDataFile, cleanUp(colText(elementsTable, ELEMENT)).join('\n'));
-};
-
-const saveAttributesDataFile = attributesTable => {
-    const ATTRIBUTE = 0;
-    writeFileSync(attributesDataFile, cleanUp(colText(attributesTable, ATTRIBUTE)).join('\n'));
-};
 
 const unlessFileExists = (file, fn = noop) => new Promise((resolve, reject) => {
     if (existsSync(file)) {
@@ -110,7 +109,35 @@ const unlessFileExists = (file, fn = noop) => new Promise((resolve, reject) => {
     r.finally(resolve);
 });
 
-const doIndex = () => 
+const genElementsInsert = elementsData => {
+    const vals = elementsData.reduce((vals, elem) => (vals.push(`  ('${elem}')`), vals), []);
+    return `INSERT INTO elements (name) VALUES\n${vals.join(',\n')};\n`;
+};
+
+const genAttributesInsert = attributesData => {
+    const vals = attributesData.reduce((vals, attr) => (vals.push(`  ('${attr}')`), vals), []);
+    return `INSERT INTO attributes (name) VALUES\n${vals.join(',\n')};\n`;
+};
+
+// elements table columns
+const ET_COLS = {
+    ELEMENT: 0
+};
+
+// attributes table columns
+const AT_COLS = {
+    ATTRIBUTE: 0
+};
+
+const main = argv => {
+    const { 
+        tmpIndexHtmlFile,
+        indexUrl,
+        tmpDir, dataDir, 
+        elementsDataFile, attributesDataFile, 
+        elementsSqlFile, attributesSqlFile 
+    } = config;
+
     unlessFileExists(tmpIndexHtmlFile, () => {
         console.log(`creating ${tmpIndexHtmlFile}`)
         mkdirp(tmpDir);
@@ -120,18 +147,47 @@ const doIndex = () =>
         const doc = readIndexDoc();
         const [elementsTable, _, attributesTable] = selectTables(doc);
 
-        unlessFileExists(elementsDataFile, () => {
-            console.log(`creating ${elementsDataFile}`)
-            mkdirp(dataDir); saveElementsDataFile(elementsTable);
-        });
+        const elementsData = getColData(elementsTable, ET_COLS.ELEMENT);
+        const attributesData = getColData(attributesTable, AT_COLS.ATTRIBUTE);
 
-        unlessFileExists(attributesDataFile, () => {
-            console.log(`creating ${attributesDataFile}`)
-            mkdirp(dataDir); saveAttributesDataFile(attributesTable);
-        });
+        if (argv.output === 'text') {
+            unlessFileExists(elementsDataFile, () => {
+                console.log(`creating ${elementsDataFile}`)
+                mkdirp(dataDir); 
+                writeFileSync(elementsDataFile, elementsData.join('\n') + '\n');
+            });
+
+            unlessFileExists(attributesDataFile, () => {
+                console.log(`creating ${attributesDataFile}`)
+                mkdirp(dataDir); 
+                writeFileSync(attributesDataFile, attributesData.join('\n') + '\n');
+            });
+        } else {
+            unlessFileExists(elementsSqlFile, () => {
+                console.log(`creating ${elementsSqlFile}`)
+                mkdirp(dataDir); 
+                writeFileSync(elementsSqlFile, genElementsInsert(elementsData));
+            });
+
+            unlessFileExists(attributesSqlFile, () => {
+                console.log(`creating ${attributesSqlFile}`)
+                mkdirp(dataDir); 
+                writeFileSync(attributesSqlFile, genAttributesInsert(attributesData));
+            });
+        }
     });
+}
 
-doIndex();
+main(yargs(hideBin(process.argv))
+    .usage('Usage: $0 [options]')
+    .option('output', {
+        describe: 'Output format',
+        default: 'sql',
+        choices: ['sql', 'text']
+    })
+    .version('1.0.0')
+    .help('help')
+    .argv);
 
 module.exports = {
     getUrl,
@@ -142,9 +198,7 @@ module.exports = {
     selectText,
     eachRow,
     text,
-    colText,
-    saveElementsDataFile,
-    saveAttributesDataFile,
+    getColData,
     unlessFileExists,
-    doIndex
+    main
 };
