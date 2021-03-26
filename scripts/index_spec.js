@@ -15,15 +15,37 @@ const config = {
         'MathML',
         'SVG',
         'autonomous custom elements'
-    ]
+    ],
+
+    // db tables 
+    elementsTable: 'elements',
+    attributesTable: 'attributes',
+    categoriesTable: 'categories',
+
+    globalAttrsName: 'Global attributes'
 };    
 
 config.tmpIndexHtmlFile = `${config.tmpDir}/${basename(config.indexUrl)}`;
-config.elementsDataFile = `${config.dataDir}/elements.txt`;
-config.attributesDataFile = `${config.dataDir}/attributes.txt`;
 
 config.elementsSqlFile = `${config.dataDir}/elements.sql`;
+config.categoriesSqlFile = `${config.dataDir}/categories.sql`;
 config.attributesSqlFile = `${config.dataDir}/attributes.sql`;
+
+// spec elements table columns
+const ET = {
+    ELEMENT: 0
+};
+
+// spec attributes table columns
+const AT = {
+    ATTRIBUTE: 0,
+    ELEMENTS: 1
+};
+
+// spec categories table columns
+const CT = {
+    CATEGORY: 0
+};
 
 const dropRE = new RegExp(config.dropList.join('|'));
 const dropStrings = arr => arr.map(v => v.replace(dropRE, '').trim());
@@ -83,18 +105,35 @@ const eachRow = (table, fn = noop) => {
     return tbody.childNodes.forEach(fn);
 };
 
-const text = textNodes => textNodes.map(node => node.value);
+const text = node => selectText(node).map(node => node.value.trim()).join('');
 
 const getColData = (table, i) => {
     const data = [];
 
     eachRow(table, row => {
-        const colTextNodes = selectText(row.childNodes[i]);
-        text(colTextNodes).join('').split(',').forEach(n => data.push(n.trim()));
+        text(row.childNodes[i])
+            .split(',') // account for comma-separated lists
+            .forEach(d => data.push(d));
     });
 
     return cleanUp(data); // FIXME: only drop strings from the dropList from the html table
 }
+
+const getGlobalAttrs = table => {
+    const globals = [];
+
+    eachRow(table, row => {
+        const attr = text(row.childNodes[AT.ATTRIBUTE]),
+            elems = text(row.childNodes[AT.ELEMENTS]);
+
+        if (elems === 'HTML elements') globals.push(attr);
+    });
+
+    return globals;
+};
+
+const makeAttrSets = (globals, attrs) => 
+    [[config.globalAttrsName, globals]].concat(attrs.map(attr => [attr, [attr]]));
 
 const unlessFileExists = (file, fn = noop) => new Promise((resolve, reject) => {
     if (existsSync(file)) {
@@ -107,26 +146,30 @@ const unlessFileExists = (file, fn = noop) => new Promise((resolve, reject) => {
     r.finally(resolve);
 });
 
-const upsertClause = 'ON CONFLICT DO NOTHING';
+const semi = ';\n';
+const insert = (table, columns, values) => 
+    `INSERT INTO ${table} (${columns.join(', ')}) VALUES\n${values.join(',\n')}\n`;
+const upsert = (table, columns, values) => insert(table, columns, values) + 'ON CONFLICT DO NOTHING';
 
-const genElementsInsert = elementsData => {
-    const vals = elementsData.reduce((vals, elem) => (vals.push(`  ('${elem}')`), vals), []);
-    return `INSERT INTO elements (name) VALUES\n${vals.join(',\n')}\n${upsertClause};\n`;
+const tuple1 = a => `    (${a})`;
+const tuple2 = (a, b) => `    (${a}, ${b})`;
+const append = (arr, v) => (arr.push(v), arr);
+const quot = x => `'${x}'`;
+
+const genElementsInsert = elements => {
+    const vals = elements.reduce((vals, name) => append(vals, tuple1(quot(name))), []);
+    return upsert(config.elementsTable, ['name'], vals) + semi;
 };
 
-const genAttributesInsert = attributesData => {
-    const vals = attributesData.reduce((vals, attr) => (vals.push(`  ('${attr}')`), vals), []);
-    return `INSERT INTO attributes (name) VALUES\n${vals.join(',\n')}\n${upsertClause};\n`;
+const getCategoriesInsert = categories => {
+    const vals = categories.reduce((vals, name) => append(vals, tuple1(quot(name))), []);
+    return upsert(config.categoriesTable, ['name'], vals) + semi;
 };
 
-// elements table columns
-const ET_COLS = {
-    ELEMENT: 0
-};
-
-// attributes table columns
-const AT_COLS = {
-    ATTRIBUTE: 0
+const genAttributesInsert = attributes => {
+    const vals = attributes.reduce((vals, [name, attrs]) => 
+        append(vals, tuple2(quot(name), quot(attrs.join(' ')))), []);
+    return upsert(config.attributesTable, ['name', 'attributes'], vals) + semi;
 };
 
 const main = argv => {
@@ -134,8 +177,7 @@ const main = argv => {
         tmpIndexHtmlFile,
         indexUrl,
         tmpDir, dataDir, 
-        elementsDataFile, attributesDataFile, 
-        elementsSqlFile, attributesSqlFile 
+        elementsSqlFile, categoriesSqlFile, attributesSqlFile 
     } = config;
 
     unlessFileExists(tmpIndexHtmlFile, inDir(tmpDir, () => {
@@ -145,42 +187,32 @@ const main = argv => {
             console.error);
     })).then(() => {
         const doc = readIndexDoc();
-        const [elementsTable, _, attributesTable] = selectTables(doc);
+        const [elementsTable, categoriesTable, attributesTable] = selectTables(doc);
 
-        const elementsData = getColData(elementsTable, ET_COLS.ELEMENT);
-        const attributesData = getColData(attributesTable, AT_COLS.ATTRIBUTE);
+        const elements = getColData(elementsTable, ET.ELEMENT);
+        const categories = getColData(categoriesTable, CT.CATEGORY);
+        const attributes = getColData(attributesTable, AT.ATTRIBUTE);
+        const globalAttrs = getGlobalAttrs(attributesTable);
 
-        if (argv.output === 'text') {
-            unlessFileExists(elementsDataFile, inDir(dataDir, () => {
-                console.log(`creating ${elementsDataFile}`)
-                writeFileSync(elementsDataFile, elementsData.join('\n') + '\n');
-            }));
+        unlessFileExists(elementsSqlFile, inDir(dataDir, () => {
+            console.log(`creating ${elementsSqlFile}`)
+            writeFileSync(elementsSqlFile, genElementsInsert(elements));
+        }));
 
-            unlessFileExists(attributesDataFile, inDir(dataDir, () => {
-                console.log(`creating ${attributesDataFile}`)
-                writeFileSync(attributesDataFile, attributesData.join('\n') + '\n');
-            }));
-        } else {
-            unlessFileExists(elementsSqlFile, inDir(dataDir, () => {
-                console.log(`creating ${elementsSqlFile}`)
-                writeFileSync(elementsSqlFile, genElementsInsert(elementsData));
-            }));
+        unlessFileExists(categoriesSqlFile, inDir(dataDir, () => {
+            console.log(`creating ${categoriesSqlFile}`)
+            writeFileSync(categoriesSqlFile, getCategoriesInsert(categories.concat(elements)));
+        }));
 
-            unlessFileExists(attributesSqlFile, inDir(dataDir, () => {
-                console.log(`creating ${attributesSqlFile}`)
-                writeFileSync(attributesSqlFile, genAttributesInsert(attributesData));
-            }));
-        }
+        unlessFileExists(attributesSqlFile, inDir(dataDir, () => {
+            console.log(`creating ${attributesSqlFile}`)
+            writeFileSync(attributesSqlFile, genAttributesInsert(makeAttrSets(globalAttrs, attributes)));
+        }));
     });
 }
 
 main(yargs(hideBin(process.argv))
     .usage('Usage: $0 [options]')
-    .option('output', {
-        describe: 'Output format',
-        default: 'sql',
-        choices: ['sql', 'text']
-    })
     .version('1.0.0')
     .help('help')
     .argv);
