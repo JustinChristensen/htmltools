@@ -1,0 +1,9 @@
+web platform 
+https://platform.html5.org/
+
+web platform tests
+http://wpt.live/
+
+browser conformance
+https://wpt.fyi/
+

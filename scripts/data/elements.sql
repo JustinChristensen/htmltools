@@ -112,4 +112,5 @@ INSERT INTO elements (name) VALUES
   ('ul'),
   ('var'),
   ('video'),
-  ('wbr');
+  ('wbr')
+ON CONFLICT DO NOTHING;

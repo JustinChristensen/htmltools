@@ -121,4 +121,5 @@ INSERT INTO attributes (name) VALUES
   ('usemap'),
   ('value'),
   ('width'),
-  ('wrap');
+  ('wrap')
+ON CONFLICT DO NOTHING;

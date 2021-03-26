@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-sqlite3 html.db < create_schema.sql
-sqlite3 html.db < data/elements.sql
-sqlite3 html.db < data/attributes.sql
+db=html.db
+echo "creating $db..."
+sqlite3 $db < create_schema.sql
+sqlite3 $db < data/elements.sql
+sqlite3 $db < data/attributes.sql
  

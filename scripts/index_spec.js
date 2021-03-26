@@ -28,8 +28,6 @@ config.attributesSqlFile = `${config.dataDir}/attributes.sql`;
 const dropRE = new RegExp(config.dropList.join('|'));
 const dropStrings = arr => arr.map(v => v.replace(dropRE, '').trim());
 
-const mkdirp = path => mkdirSync(path, { recursive: true });
-
 const uniq = arr => arr.filter((v, i) => arr.indexOf(v) === i);
 
 const cleanUp = arr => {
@@ -38,6 +36,8 @@ const cleanUp = arr => {
     arr = arr.filter(v => v !== '');
     return arr;
 };
+
+const inDir = (path, fn) => () => (mkdirSync(path, { recursive: true }), fn());
 
 const getUrl = url => new Promise((resolve, reject) => {
     get(url, res => {
@@ -54,8 +54,6 @@ const getUrl = url => new Promise((resolve, reject) => {
         res.on('end', () => resolve(body));
     }).on('error', reject)
 });
-
-const saveIndexHtmlFile = body => writeFileSync(config.tmpIndexHtmlFile, body);
 
 const readIndexDoc = () => {
     const indexHtml = readFileSync(config.tmpIndexHtmlFile, { encoding: 'utf8' });
@@ -95,7 +93,7 @@ const getColData = (table, i) => {
         text(colTextNodes).join('').split(',').forEach(n => data.push(n.trim()));
     });
 
-    return cleanUp(data);
+    return cleanUp(data); // FIXME: only drop strings from the dropList from the html table
 }
 
 const unlessFileExists = (file, fn = noop) => new Promise((resolve, reject) => {
@@ -109,14 +107,16 @@ const unlessFileExists = (file, fn = noop) => new Promise((resolve, reject) => {
     r.finally(resolve);
 });
 
+const upsertClause = 'ON CONFLICT DO NOTHING';
+
 const genElementsInsert = elementsData => {
     const vals = elementsData.reduce((vals, elem) => (vals.push(`  ('${elem}')`), vals), []);
-    return `INSERT INTO elements (name) VALUES\n${vals.join(',\n')};\n`;
+    return `INSERT INTO elements (name) VALUES\n${vals.join(',\n')}\n${upsertClause};\n`;
 };
 
 const genAttributesInsert = attributesData => {
     const vals = attributesData.reduce((vals, attr) => (vals.push(`  ('${attr}')`), vals), []);
-    return `INSERT INTO attributes (name) VALUES\n${vals.join(',\n')};\n`;
+    return `INSERT INTO attributes (name) VALUES\n${vals.join(',\n')}\n${upsertClause};\n`;
 };
 
 // elements table columns
@@ -138,12 +138,12 @@ const main = argv => {
         elementsSqlFile, attributesSqlFile 
     } = config;
 
-    unlessFileExists(tmpIndexHtmlFile, () => {
+    unlessFileExists(tmpIndexHtmlFile, inDir(tmpDir, () => {
         console.log(`creating ${tmpIndexHtmlFile}`)
-        mkdirp(tmpDir);
-        return getUrl(indexUrl).then(saveIndexHtmlFile, console.error)
-            .then(() => console.log(`saved ${tmpIndexHtmlFile}`));
-    }).then(() => {
+        return getUrl(indexUrl).then(
+            body => writeFileSync(config.tmpIndexHtmlFile, body), 
+            console.error);
+    })).then(() => {
         const doc = readIndexDoc();
         const [elementsTable, _, attributesTable] = selectTables(doc);
 
@@ -151,29 +151,25 @@ const main = argv => {
         const attributesData = getColData(attributesTable, AT_COLS.ATTRIBUTE);
 
         if (argv.output === 'text') {
-            unlessFileExists(elementsDataFile, () => {
+            unlessFileExists(elementsDataFile, inDir(dataDir, () => {
                 console.log(`creating ${elementsDataFile}`)
-                mkdirp(dataDir); 
                 writeFileSync(elementsDataFile, elementsData.join('\n') + '\n');
-            });
+            }));
 
-            unlessFileExists(attributesDataFile, () => {
+            unlessFileExists(attributesDataFile, inDir(dataDir, () => {
                 console.log(`creating ${attributesDataFile}`)
-                mkdirp(dataDir); 
                 writeFileSync(attributesDataFile, attributesData.join('\n') + '\n');
-            });
+            }));
         } else {
-            unlessFileExists(elementsSqlFile, () => {
+            unlessFileExists(elementsSqlFile, inDir(dataDir, () => {
                 console.log(`creating ${elementsSqlFile}`)
-                mkdirp(dataDir); 
                 writeFileSync(elementsSqlFile, genElementsInsert(elementsData));
-            });
+            }));
 
-            unlessFileExists(attributesSqlFile, () => {
+            unlessFileExists(attributesSqlFile, inDir(dataDir, () => {
                 console.log(`creating ${attributesSqlFile}`)
-                mkdirp(dataDir); 
                 writeFileSync(attributesSqlFile, genAttributesInsert(attributesData));
-            });
+            }));
         }
     });
 }
@@ -191,7 +187,6 @@ main(yargs(hideBin(process.argv))
 
 module.exports = {
     getUrl,
-    saveIndexHtmlFile,
     readIndexDoc,
     selectNodes,
     selectTables,
