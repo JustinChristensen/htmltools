@@ -14,13 +14,16 @@ const config = {
     dropList: [
         'MathML',
         'SVG',
-        'autonomous custom elements'
+        'autonomous custom elements',
+        'Text',
+        'form-associated custom elements'
     ],
 
     // db tables 
     elementsTable: 'elements',
     attributesTable: 'attributes',
     categoriesTable: 'categories',
+    categoriesElementsTable: 'categories_elements',
 
     globalAttrsName: 'Global attributes'
 };    
@@ -30,6 +33,7 @@ config.tmpIndexHtmlFile = `${config.tmpDir}/${basename(config.indexUrl)}`;
 config.elementsSqlFile = `${config.dataDir}/elements.sql`;
 config.categoriesSqlFile = `${config.dataDir}/categories.sql`;
 config.attributesSqlFile = `${config.dataDir}/attributes.sql`;
+config.categoriesElementsSqlFile = `${config.dataDir}/categories_elements.sql`;
 
 // spec elements table columns
 const ET = {
@@ -44,20 +48,14 @@ const AT = {
 
 // spec categories table columns
 const CT = {
-    CATEGORY: 0
+    CATEGORY: 0,
+    ELEMENTS: 1
 };
 
 const dropRE = new RegExp(config.dropList.join('|'));
-const dropStrings = arr => arr.map(v => v.replace(dropRE, '').trim());
+const dropStrings = arr => arr.map(v => v.replace(dropRE, '').trim()).filter(v => v !== '');
 
 const uniq = arr => arr.filter((v, i) => arr.indexOf(v) === i);
-
-const cleanUp = arr => {
-    arr = uniq(arr);
-    arr = dropStrings(arr);
-    arr = arr.filter(v => v !== '');
-    return arr;
-};
 
 const inDir = (path, fn) => () => (mkdirSync(path, { recursive: true }), fn());
 
@@ -107,16 +105,16 @@ const eachRow = (table, fn = noop) => {
 
 const text = node => selectText(node).map(node => node.value.trim()).join('');
 
-const getColData = (table, i) => {
+const getColData = (table, i, sep = null) => {
     const data = [];
 
     eachRow(table, row => {
         text(row.childNodes[i])
-            .split(',') // account for comma-separated lists
+            .split(sep) 
             .forEach(d => data.push(d));
     });
 
-    return cleanUp(data); // FIXME: only drop strings from the dropList from the html table
+    return uniq(data); 
 }
 
 const getGlobalAttrs = table => {
@@ -131,6 +129,21 @@ const getGlobalAttrs = table => {
 
     return globals;
 };
+
+const getCategories = table => {
+    const categories = [];
+
+    eachRow(table, row => {
+        const category = text(row.childNodes[CT.CATEGORY]),
+            elems = dropStrings(text(row.childNodes[CT.ELEMENTS]).split(';'));
+        categories.push([category, elems]);
+    });
+
+    return categories;
+};
+
+const makeCategorySets = (categories, elements) => 
+    categories.concat(elements.map(elem => [elem, [elem]]));
 
 const makeAttrSets = (globals, attrs) => 
     [[config.globalAttrsName, globals]].concat(attrs.map(attr => [attr, [attr]]));
@@ -166,6 +179,15 @@ const getCategoriesInsert = categories => {
     return upsert(config.categoriesTable, ['name'], vals) + semi;
 };
 
+const getCategoriesElementsInsert = categories => {
+    const vals = categories
+        .reduce((vals, [cat, elems]) => {
+            elems.forEach(elem => append(vals, tuple2(quot(cat), quot(elem))));
+            return vals;
+        }, []);
+    return upsert(config.categoriesElementsTable, ['category', 'element'], vals) + semi;
+};
+
 const genAttributesInsert = attributes => {
     const vals = attributes.reduce((vals, [name, attrs]) => 
         append(vals, tuple2(quot(name), quot(attrs.join(' ')))), []);
@@ -177,7 +199,8 @@ const main = argv => {
         tmpIndexHtmlFile,
         indexUrl,
         tmpDir, dataDir, 
-        elementsSqlFile, categoriesSqlFile, attributesSqlFile 
+        elementsSqlFile, categoriesSqlFile, attributesSqlFile,
+        categoriesElementsSqlFile
     } = config;
 
     unlessFileExists(tmpIndexHtmlFile, inDir(tmpDir, () => {
@@ -189,8 +212,8 @@ const main = argv => {
         const doc = readIndexDoc();
         const [elementsTable, categoriesTable, attributesTable] = selectTables(doc);
 
-        const elements = getColData(elementsTable, ET.ELEMENT);
-        const categories = getColData(categoriesTable, CT.CATEGORY);
+        const elements = dropStrings(getColData(elementsTable, ET.ELEMENT, ','));
+        const categories = getCategories(categoriesTable);
         const attributes = getColData(attributesTable, AT.ATTRIBUTE);
         const globalAttrs = getGlobalAttrs(attributesTable);
 
@@ -201,7 +224,14 @@ const main = argv => {
 
         unlessFileExists(categoriesSqlFile, inDir(dataDir, () => {
             console.log(`creating ${categoriesSqlFile}`)
-            writeFileSync(categoriesSqlFile, getCategoriesInsert(categories.concat(elements)));
+            writeFileSync(categoriesSqlFile, getCategoriesInsert(categories
+                .map(c => c[0]).concat(elements)));
+        }));
+
+        unlessFileExists(categoriesElementsSqlFile, inDir(dataDir, () => {
+            console.log(`creating ${categoriesElementsSqlFile}`)
+            writeFileSync(categoriesElementsSqlFile, 
+                getCategoriesElementsInsert(makeCategorySets(categories, elements)));
         }));
 
         unlessFileExists(attributesSqlFile, inDir(dataDir, () => {
