@@ -1,15 +1,19 @@
 #!/usr/bin/env bash
 
-db=html.db
-[[ ! -f $db ]] && echo "creating $db..."
-sqlite3 $db < create_schema.sql
+DB=html.db
+[[ ! -f $DB ]] && echo "creating $DB..."
 
-echo "elements..."
-sqlite3 $db < data/elements.sql
-echo "attributes..."
-sqlite3 $db < data/attributes.sql
-echo "categories..."
-sqlite3 $db < data/categories.sql
-echo "categories_elements..."
-sqlite3 $db < data/categories_elements.sql
- 
+SQLFILES=(
+create_schema.sql
+data/elements.sql
+data/attributes.sql
+data/categories.sql
+data/categories_elements.sql
+constraints.sql
+elements_attributes.sql
+)
+
+for F in ${SQLFILES[@]}; do
+    echo "$F..."
+    sqlite3 $DB < "$F"
+done

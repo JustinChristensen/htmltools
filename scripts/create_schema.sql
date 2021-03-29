@@ -1,6 +1,8 @@
+/* TODO: move this into a migrations directory */
+
 /* elements */
 CREATE TABLE IF NOT EXISTS elements (
-    name TEXT PRIMARY KEY
+    name TEXT PRIMARY KEY           /* element name */
 );
 
 /* attributes */
@@ -8,8 +10,8 @@ CREATE TABLE IF NOT EXISTS elements (
    the only set is global, and so we'll skip the join table */
 CREATE TABLE IF NOT EXISTS attributes (
     name TEXT PRIMARY KEY,          /* attribute or category name (for now, just global) */
-    attributes TEXT NOT NULL        /* space-delimited set of attributes (as of know, */
-                                    /* just the attribute itself with global being the only set) */ 
+    attributes TEXT NOT NULL        /* space-delimited set of attributes (as of now, just the 
+                                       attribute itself with global being the only set)*/
 ) WITHOUT ROWID;                                  
 
 /* element categories (phrasing, flow, a, h1, etc) */
@@ -20,7 +22,7 @@ CREATE TABLE IF NOT EXISTS categories (
 /* unique identifier mapped to a description of the constraint */
 CREATE TABLE IF NOT EXISTS constraints (
     "constraint" TEXT PRIMARY KEY,  /* constraint id, such as descendant-of-video-or-audio */
-    description TEXT                /* plain text description of the constraint */
+    locations TEXT NOT NULL          /* URLs where the spec mentions the constraint */
 ) WITHOUT ROWID;
 
 /* element content model, with potential constraints */

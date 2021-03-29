@@ -1,3 +1,4 @@
+PRAGMA foreign_keys = ON;
 INSERT INTO categories_elements (category, element) VALUES
     ('Metadata content', 'base'),
     ('Metadata content', 'link'),

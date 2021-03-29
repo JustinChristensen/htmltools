@@ -159,6 +159,7 @@ const unlessFileExists = (file, fn = noop) => new Promise((resolve, reject) => {
     r.finally(resolve);
 });
 
+const foreignKeysOn = 'PRAGMA foreign_keys = ON;';
 const semi = ';\n';
 const insert = (table, columns, values) => 
     `INSERT INTO ${table} (${columns.join(', ')}) VALUES\n${values.join(',\n')}\n`;
@@ -231,6 +232,7 @@ const main = argv => {
         unlessFileExists(categoriesElementsSqlFile, inDir(dataDir, () => {
             console.log(`creating ${categoriesElementsSqlFile}`)
             writeFileSync(categoriesElementsSqlFile, 
+                `${foreignKeysOn}\n` +
                 getCategoriesElementsInsert(makeCategorySets(categories, elements)));
         }));
 
