@@ -52,6 +52,8 @@ const CT = {
     ELEMENTS: 1
 };
 
+const fatal = msg => (console.error(msg), process.exit(1));
+
 const dropRE = new RegExp(config.dropList.join('|'));
 const dropStrings = arr => arr.map(v => v.replace(dropRE, '').trim()).filter(v => v !== '');
 
@@ -208,15 +210,15 @@ const main = argv => {
         console.log(`creating ${tmpIndexHtmlFile}`)
         return getUrl(indexUrl).then(
             body => writeFileSync(config.tmpIndexHtmlFile, body), 
-            console.error);
+            fatal);
     })).then(() => {
         const doc = readIndexDoc();
-        const [elementsTable, categoriesTable, attributesTable] = selectTables(doc);
+        const [elementsTable, categoriesTable, attributesTable, eventHandlersTable] = selectTables(doc);
+
+        if (!elementsTable) fatal(`error: ${tmpIndexHtmlFile} missing tables`);
 
         const elements = dropStrings(getColData(elementsTable, ET.ELEMENT, ','));
         const categories = getCategories(categoriesTable);
-        const attributes = getColData(attributesTable, AT.ATTRIBUTE);
-        const globalAttrs = getGlobalAttrs(attributesTable);
 
         unlessFileExists(elementsSqlFile, inDir(dataDir, () => {
             console.log(`creating ${elementsSqlFile}`)
@@ -237,8 +239,15 @@ const main = argv => {
         }));
 
         unlessFileExists(attributesSqlFile, inDir(dataDir, () => {
+            const attributes = getColData(attributesTable, AT.ATTRIBUTE);
+            const globalAttrs = getGlobalAttrs(attributesTable);
+            const eventHandlers = getColData(eventHandlersTable, AT.ATTRIBUTE);
+            const globalHandlers = getGlobalAttrs(eventHandlersTable);
+
             console.log(`creating ${attributesSqlFile}`)
-            writeFileSync(attributesSqlFile, genAttributesInsert(makeAttrSets(globalAttrs, attributes)));
+            writeFileSync(attributesSqlFile, genAttributesInsert(makeAttrSets(
+                globalAttrs.concat(globalHandlers), 
+                attributes.concat(eventHandlers))));
         }));
     });
 }

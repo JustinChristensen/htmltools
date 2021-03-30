@@ -51,6 +51,7 @@ INSERT INTO elements_attributes (element, attribute, "constraint") VALUES
     ('blockquote', 'Global attributes', NULL),
     ('blockquote', 'cite', NULL),
 
+    /* TODO: event listeners */
     ('body', 'Global attributes', NULL),
     ('body', 'onafterprint', NULL),
     ('body', 'onbeforeprint', NULL),

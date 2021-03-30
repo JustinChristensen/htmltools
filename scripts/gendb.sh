@@ -4,13 +4,13 @@ DB=html.db
 [[ ! -f $DB ]] && echo "creating $DB..."
 
 SQLFILES=(
-create_schema.sql
-data/elements.sql
-data/attributes.sql
-data/categories.sql
-data/categories_elements.sql
-constraints.sql
-elements_attributes.sql
+    create_schema.sql
+    data/elements.sql
+    data/attributes.sql
+    data/categories.sql
+    data/categories_elements.sql
+    constraints.sql
+    elements_attributes.sql
 )
 
 for F in ${SQLFILES[@]}; do
