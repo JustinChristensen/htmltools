@@ -1,3 +1,5 @@
+/* Generated. See index_spec.js. */
+PRAGMA foreign_keys = ON;
 INSERT INTO attributes (name, attributes) VALUES
     ('Global attributes', 'accesskey autocapitalize autofocus class contenteditable dir draggable enterkeyhint hidden id inputmode is itemid itemprop itemref itemscope itemtype lang nonce slot spellcheck style tabindex title translate onabort onauxclick onblur oncancel oncanplay oncanplaythrough onchange onclick onclose oncontextmenu oncopy oncuechange oncut ondblclick ondrag ondragend ondragenter ondragleave ondragover ondragstart ondrop ondurationchange onemptied onended onerror onfocus onformdata oninput oninvalid onkeydown onkeypress onkeyup onload onloadeddata onloadedmetadata onloadstart onmousedown onmouseenter onmouseleave onmousemove onmouseout onmouseover onmouseup onpaste onpause onplay onplaying onprogress onratechange onreset onresize onscroll onsecuritypolicyviolation onseeked onseeking onselect onslotchange onstalled onsubmit onsuspend ontimeupdate ontoggle onvolumechange onwaiting onwheel'),
     ('abbr', 'abbr'),

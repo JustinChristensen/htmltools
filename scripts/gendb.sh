@@ -11,6 +11,7 @@ SQLFILES=(
     data/categories_elements.sql
     constraints.sql
     elements_attributes.sql
+    element_contents.sql
 )
 
 for F in ${SQLFILES[@]}; do

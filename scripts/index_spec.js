@@ -58,6 +58,7 @@ const dropRE = new RegExp(config.dropList.join('|'));
 const dropStrings = arr => arr.map(v => v.replace(dropRE, '').trim()).filter(v => v !== '');
 
 const uniq = arr => arr.filter((v, i) => arr.indexOf(v) === i);
+const toKebabCase = s => s.toLowerCase().split(' ').join('-');
 
 const inDir = (path, fn) => () => (mkdirSync(path, { recursive: true }), fn());
 
@@ -138,7 +139,7 @@ const getCategories = table => {
     eachRow(table, row => {
         const category = text(row.childNodes[CT.CATEGORY]),
             elems = dropStrings(text(row.childNodes[CT.ELEMENTS]).split(';'));
-        categories.push([category, elems]);
+        categories.push([toKebabCase(category), elems]);
     });
 
     return categories;
@@ -161,7 +162,9 @@ const unlessFileExists = (file, fn = noop) => new Promise((resolve, reject) => {
     r.finally(resolve);
 });
 
+const generated = '/* Generated. See index_spec.js. */'
 const foreignKeysOn = 'PRAGMA foreign_keys = ON;';
+const sqlFileHeader = `${generated}\n${foreignKeysOn}\n`;
 const semi = ';\n';
 const insert = (table, columns, values) => 
     `INSERT INTO ${table} (${columns.join(', ')}) VALUES\n${values.join(',\n')}\n`;
@@ -222,19 +225,22 @@ const main = argv => {
 
         unlessFileExists(elementsSqlFile, inDir(dataDir, () => {
             console.log(`creating ${elementsSqlFile}`)
-            writeFileSync(elementsSqlFile, genElementsInsert(elements));
+            writeFileSync(elementsSqlFile, 
+                sqlFileHeader +
+                genElementsInsert(elements));
         }));
 
         unlessFileExists(categoriesSqlFile, inDir(dataDir, () => {
             console.log(`creating ${categoriesSqlFile}`)
-            writeFileSync(categoriesSqlFile, getCategoriesInsert(categories
-                .map(c => c[0]).concat(elements)));
+            writeFileSync(categoriesSqlFile, 
+                sqlFileHeader +
+                getCategoriesInsert(categories.map(c => c[0]).concat(elements)));
         }));
 
         unlessFileExists(categoriesElementsSqlFile, inDir(dataDir, () => {
             console.log(`creating ${categoriesElementsSqlFile}`)
             writeFileSync(categoriesElementsSqlFile, 
-                `${foreignKeysOn}\n` +
+                sqlFileHeader + 
                 getCategoriesElementsInsert(makeCategorySets(categories, elements)));
         }));
 
@@ -245,9 +251,11 @@ const main = argv => {
             const globalHandlers = getGlobalAttrs(eventHandlersTable);
 
             console.log(`creating ${attributesSqlFile}`)
-            writeFileSync(attributesSqlFile, genAttributesInsert(makeAttrSets(
-                globalAttrs.concat(globalHandlers), 
-                attributes.concat(eventHandlers))));
+            writeFileSync(attributesSqlFile, 
+                sqlFileHeader + 
+                genAttributesInsert(makeAttrSets(
+                    globalAttrs.concat(globalHandlers), 
+                    attributes.concat(eventHandlers))));
         }));
     });
 }

@@ -2,8 +2,9 @@
 
 /* elements */
 CREATE TABLE IF NOT EXISTS elements (
-    name TEXT PRIMARY KEY           /* element name */
-);
+    name TEXT PRIMARY KEY,                               /* element name */
+    contents TEXT REFERENCES constraints("constraint")   /* content model constraint */
+) WITHOUT ROWID;
 
 /* attributes */
 /* as of right now, there are no constraints on membership for a set, and 
@@ -23,14 +24,6 @@ CREATE TABLE IF NOT EXISTS categories (
 CREATE TABLE IF NOT EXISTS constraints (
     "constraint" TEXT PRIMARY KEY,  /* constraint id, such as descendant-of-video-or-audio */
     locations TEXT NOT NULL          /* URLs where the spec mentions the constraint */
-) WITHOUT ROWID;
-
-/* element content model, with potential constraints */
-CREATE TABLE IF NOT EXISTS elements_categories (
-    element TEXT NOT NULL REFERENCES elements(name),
-    category TEXT NOT NULL REFERENCES categories(name),
-    "constraint" TEXT REFERENCES constraints("constraint"),
-    PRIMARY KEY (element, category) 
 ) WITHOUT ROWID;
 
 /* element attributes, with potential constraints */
