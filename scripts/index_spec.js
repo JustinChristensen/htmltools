@@ -9,6 +9,7 @@ const { parse: parseHtml } = require('parse5');
 
 const config = {
     indexUrl: 'https://html.spec.whatwg.org/multipage/indices.html',
+    migrationsDir: 'migrations',
     tmpDir: 'tmp',
     dataDir: 'data',
     dropList: [
@@ -30,10 +31,10 @@ const config = {
 
 config.tmpIndexHtmlFile = `${config.tmpDir}/${basename(config.indexUrl)}`;
 
-config.elementsSqlFile = `${config.dataDir}/elements.sql`;
-config.categoriesSqlFile = `${config.dataDir}/categories.sql`;
-config.attributesSqlFile = `${config.dataDir}/attributes.sql`;
-config.categoriesElementsSqlFile = `${config.dataDir}/categories_elements.sql`;
+config.elementsSqlFile = `${config.migrationsDir}/${config.dataDir}/elements.sql`;
+config.categoriesSqlFile = `${config.migrationsDir}/${config.dataDir}/categories.sql`;
+config.attributesSqlFile = `${config.migrationsDir}/${config.dataDir}/attributes.sql`;
+config.categoriesElementsSqlFile = `${config.migrationsDir}/${config.dataDir}/categories_elements.sql`;
 
 // spec elements table columns
 const ET = {
@@ -200,6 +201,11 @@ const genAttributesInsert = attributes => {
     return upsert(config.attributesTable, ['name', 'attributes'], vals) + semi;
 };
 
+const writeMigration = (file, data) => {
+    console.log(`creating ${file}`)
+    return writeFileSync(file, data);
+};
+
 const main = argv => {
     const { 
         tmpIndexHtmlFile,
@@ -224,22 +230,19 @@ const main = argv => {
         const categories = getCategories(categoriesTable);
 
         unlessFileExists(elementsSqlFile, inDir(dataDir, () => {
-            console.log(`creating ${elementsSqlFile}`)
-            writeFileSync(elementsSqlFile, 
+            writeMigration(elementsSqlFile, 
                 sqlFileHeader +
                 genElementsInsert(elements));
         }));
 
         unlessFileExists(categoriesSqlFile, inDir(dataDir, () => {
-            console.log(`creating ${categoriesSqlFile}`)
-            writeFileSync(categoriesSqlFile, 
+            writeMigration(categoriesSqlFile, 
                 sqlFileHeader +
                 getCategoriesInsert(categories.map(c => c[0]).concat(elements)));
         }));
 
         unlessFileExists(categoriesElementsSqlFile, inDir(dataDir, () => {
-            console.log(`creating ${categoriesElementsSqlFile}`)
-            writeFileSync(categoriesElementsSqlFile, 
+            writeMigration(categoriesElementsSqlFile, 
                 sqlFileHeader + 
                 getCategoriesElementsInsert(makeCategorySets(categories, elements)));
         }));
@@ -250,8 +253,7 @@ const main = argv => {
             const eventHandlers = getColData(eventHandlersTable, AT.ATTRIBUTE);
             const globalHandlers = getGlobalAttrs(eventHandlersTable);
 
-            console.log(`creating ${attributesSqlFile}`)
-            writeFileSync(attributesSqlFile, 
+            writeMigration(attributesSqlFile, 
                 sqlFileHeader + 
                 genAttributesInsert(makeAttrSets(
                     globalAttrs.concat(globalHandlers), 

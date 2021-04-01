@@ -16,6 +16,6 @@ SQLFILES=(
 )
 
 for F in ${SQLFILES[@]}; do
-    echo "$F..."
-    sqlite3 $DB < "$F"
+    echo "migrations/$F..."
+    sqlite3 $DB < "migrations/$F"
 done

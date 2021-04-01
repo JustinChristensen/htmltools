@@ -1,4 +1,6 @@
 CABAL := cabal
+SCRIPTS_DIR := scripts
+MIGRATIONS_DIR := $(SCRIPTS_DIR)/migrations
 
 .PHONY: all
 all:
@@ -7,7 +9,7 @@ all:
 scripts/data/%.sql:
 	cd scripts && ./index_spec.js
 
-scripts/html.db: scripts/data/*.sql scripts/*.sql
+scripts/html.db: $(MIGRATIONS_DIR)/data/*.sql $(MIGRATIONS_DIR)/*.sql
 	cd scripts && ./gendb.sh
 
 .PHONY: repl
@@ -17,4 +19,5 @@ repl:
 .PHONY: clean
 clean:
 	$(CABAL) clean
+	rm -rf $(SCRIPTS_DIR)/tmp
 
