@@ -225,4 +225,6 @@ SET contents = CASE name
     WHEN 'video' THEN 'source-then-track-then-transparent-with-exceptions'
 
     /* wbr */
+
+    ELSE contents
 END;

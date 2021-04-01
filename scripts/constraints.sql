@@ -22,6 +22,7 @@ INSERT INTO constraints ("constraint", locations) VALUES
     ('child-of-ol',                                                                  'https://html.spec.whatwg.org/multipage/grouping-content.html#the-li-element'),
     ('child-of-video-or-audio',                                                      'https://html.spec.whatwg.org/multipage/embedded-content.html#the-source-element'),
     ('child-of-picture',                                                             'https://html.spec.whatwg.org/multipage/embedded-content.html#the-source-element'),
+
     ('transparent-with-a-exceptions',                                                'https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-a-element'),
     ('flow-content-with-address-exceptions',                                         'https://html.spec.whatwg.org/multipage/sections.html#the-address-element'),
     ('source-then-track-then-transparent-with-exceptions',                           'https://html.spec.whatwg.org/multipage/media.html#the-audio-element https://html.spec.whatwg.org/multipage/media.html#the-video-element'),
@@ -61,6 +62,17 @@ INSERT INTO constraints ("constraint", locations) VALUES
     ('flow-content-without-header-footer-sectioning-or-heading-content-descendants', 'https://html.spec.whatwg.org/multipage/tables.html#the-th-element'),
     ('phrasing-content-having-datetime-attribute-otherwise-text',                    'https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-time-element'),
     ('text-without-ie-whitespace',                                                   'https://html.spec.whatwg.org/multipage/semantics.html#the-title-element'),
-    ('td-th-and-script-supporting',                                                  'https://html.spec.whatwg.org/multipage/tables.html#the-tr-element')
+    ('td-th-and-script-supporting',                                                  'https://html.spec.whatwg.org/multipage/tables.html#the-tr-element'),
+
+    ('is-descendant-of-map',                                                         'https://html.spec.whatwg.org/multipage/dom.html#flow-content-2'),
+    ('is-allowed-in-body',                                                           'https://html.spec.whatwg.org/multipage/dom.html#flow-content-2'),
+    ('is-hierarchically-correct-main',                                               'https://html.spec.whatwg.org/multipage/grouping-content.html#hierarchically-correct-main-element'),
+    ('has-itemprop-attribute',                                                       'https://html.spec.whatwg.org/multipage/dom.html#flow-content-2'),
+    ('has-href-attribute',                                                           'https://html.spec.whatwg.org/multipage/dom.html#interactive-content-2'),
+    ('has-controls-attribute',                                                       'https://html.spec.whatwg.org/multipage/dom.html#interactive-content-2 https://html.spec.whatwg.org/multipage/dom.html#palpable-content'),
+    ('has-usemap-attribute',                                                         'https://html.spec.whatwg.org/multipage/dom.html#interactive-content-2'),
+    ('type-attribute-not-hidden',                                                    'https://html.spec.whatwg.org/multipage/dom.html#interactive-content-2 https://html.spec.whatwg.org/multipage/forms.html#category-label https://html.spec.whatwg.org/multipage/dom.html#palpable-content'),
+    ('has-name-value-child',                                                         'https://html.spec.whatwg.org/multipage/dom.html#palpable-content'),
+    ('has-li-child',                                                                 'https://html.spec.whatwg.org/multipage/dom.html#palpable-content')
 
 ON CONFLICT DO NOTHING;

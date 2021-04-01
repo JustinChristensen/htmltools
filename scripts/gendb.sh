@@ -12,6 +12,7 @@ SQLFILES=(
     constraints.sql
     elements_attributes.sql
     element_contents.sql
+    category_constraints.sql
 )
 
 for F in ${SQLFILES[@]}; do

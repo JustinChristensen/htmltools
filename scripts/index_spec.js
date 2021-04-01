@@ -142,7 +142,7 @@ const getCategories = table => {
         categories.push([toKebabCase(category), elems]);
     });
 
-    return categories;
+    return categories.sort(([c1], [c2]) => c1.localeCompare(c2));
 };
 
 const makeCategorySets = (categories, elements) => 
