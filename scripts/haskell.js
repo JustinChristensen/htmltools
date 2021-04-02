@@ -2,7 +2,7 @@ const sqlite3 = require('sqlite3');
 const { open } = require('sqlite');
 const { resolve } = require('path');
 const { writeFileSync } = require('fs');
-const { config, inDir } = require('./config');
+const { config, capLookup, capRE, inDir } = require('./config');
     
 const keywords = new Set([
     'data', 
@@ -11,12 +11,17 @@ const keywords = new Set([
     'type',
     'pattern'
 ]);
+
 const undr = s => keywords.has(s) ? `${s}_` : s;
 const undrKWs = arr => arr.map(undr);
 
-const dedash = str => str.replace(/-[a-zA-Z]/, s => s[1].toUpperCase());
-const camelCase = str => dedash(str);
-const pascalCase = str =>  dedash(str.charAt(0).toUpperCase() + str.slice(1));
+const toUpper = s => s.toUpperCase();
+const toLower = s => s.toLowerCase();
+const capitalize = str => str.replaceAll(capRE, s => capLookup[s] ? capLookup[s] : s);
+const dedash = str => str.replaceAll(/-[a-zA-Z]/g, s => toUpper(s[1]));
+const caseize = (to, str) => to(str.charAt(0)) + str.slice(1);
+const camelCase = str => caseize(toLower, capitalize(dedash(str)));
+const pascalCase = str =>  caseize(toUpper, capitalize(dedash(str)));
 
 const neQ = (x, y) => `${x} != ${y}`;
 const selectQ = (cols = [], table, where) => 

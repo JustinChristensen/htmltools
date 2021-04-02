@@ -5,17 +5,17 @@ data Attribute a =
       Abbr a
     | Accept a
     | AcceptCharset a
-    | Accesskey a
+    | AccessKey a
     | Action a
     | Allow a
-    | Allowfullscreen a
+    | AllowFullScreen a
     | Alt a
     | As a
     | Async a
-    | Autocapitalize a
-    | Autocomplete a
-    | Autofocus a
-    | Autoplay a
+    | AutoCapitalize a
+    | AutoComplete a
+    | AutoFocus a
+    | AutoPlay a
     | Charset a
     | Checked a
     | Cite a
@@ -24,48 +24,48 @@ data Attribute a =
     | Cols a
     | Colspan a
     | Content a
-    | Contenteditable a
+    | ContentEditable a
     | Controls a
     | Coords a
-    | Crossorigin a
+    | CrossOrigin a
     | Data a
-    | Datetime a
+    | DateTime a
     | Decoding a
     | Default a
     | Defer a
     | Dir a
     | Dirname a
     | Disabled a
-    | Download a
+    | DownLoad a
     | Draggable a
     | Enctype a
-    | Enterkeyhint a
+    | EnterKeyHint a
     | For a
     | Form a
-    | Formaction a
-    | Formenctype a
-    | Formmethod a
-    | Formnovalidate a
-    | Formtarget a
+    | FormAction a
+    | FormEnctype a
+    | FormMethod a
+    | FormNoValidate a
+    | FormTarget a
     | Headers a
     | Height a
     | Hidden a
     | High a
     | Href a
-    | Hreflang a
+    | HrefLang a
     | HttpEquiv a
     | Id a
-    | Imagesizes a
-    | Imagesrcset a
-    | Inputmode a
+    | ImageSizes a
+    | ImageSrcSet a
+    | InputMode a
     | Integrity a
     | Is a
-    | Ismap a
-    | Itemid a
-    | Itemprop a
-    | Itemref a
-    | Itemscope a
-    | Itemtype a
+    | IsMap a
+    | ItemId a
+    | ItemProp a
+    | ItemRef a
+    | ItemScope a
+    | ItemType a
     | Kind a
     | Label a
     | Lang a
@@ -74,108 +74,108 @@ data Attribute a =
     | Loop a
     | Low a
     | Max a
-    | Maxlength a
+    | MaxLength a
     | Media a
     | Method a
     | Min a
-    | Minlength a
+    | MinLength a
     | Multiple a
     | Muted a
     | Name a
-    | Nomodule a
+    | NoModule a
     | Nonce a
-    | Novalidate a
-    | Onabort a
-    | Onafterprint a
-    | Onauxclick a
-    | Onbeforeprint a
-    | Onbeforeunload a
-    | Onblur a
-    | Oncancel a
-    | Oncanplay a
-    | Oncanplaythrough a
-    | Onchange a
-    | Onclick a
-    | Onclose a
-    | Oncontextmenu a
-    | Oncopy a
-    | Oncuechange a
-    | Oncut a
-    | Ondblclick a
-    | Ondrag a
-    | Ondragend a
-    | Ondragenter a
-    | Ondragleave a
-    | Ondragover a
-    | Ondragstart a
-    | Ondrop a
-    | Ondurationchange a
-    | Onemptied a
-    | Onended a
-    | Onerror a
-    | Onfocus a
-    | Onformdata a
-    | Onhashchange a
-    | Oninput a
-    | Oninvalid a
-    | Onkeydown a
-    | Onkeypress a
-    | Onkeyup a
-    | Onlanguagechange a
-    | Onload a
-    | Onloadeddata a
-    | Onloadedmetadata a
-    | Onloadstart a
-    | Onmessage a
-    | Onmessageerror a
-    | Onmousedown a
-    | Onmouseenter a
-    | Onmouseleave a
-    | Onmousemove a
-    | Onmouseout a
-    | Onmouseover a
-    | Onmouseup a
-    | Onoffline a
-    | Ononline a
-    | Onpagehide a
-    | Onpageshow a
-    | Onpaste a
-    | Onpause a
-    | Onplay a
-    | Onplaying a
-    | Onpopstate a
-    | Onprogress a
-    | Onratechange a
-    | Onrejectionhandled a
-    | Onreset a
-    | Onresize a
-    | Onscroll a
-    | Onsecuritypolicyviolation a
-    | Onseeked a
-    | Onseeking a
-    | Onselect a
-    | Onslotchange a
-    | Onstalled a
-    | Onstorage a
-    | Onsubmit a
-    | Onsuspend a
-    | Ontimeupdate a
-    | Ontoggle a
-    | Onunhandledrejection a
-    | Onunload a
-    | Onvolumechange a
-    | Onwaiting a
-    | Onwheel a
+    | NoValidate a
+    | OnAbort a
+    | OnAfterPrint a
+    | OnAuxClick a
+    | OnBeforePrint a
+    | OnBeforeUnload a
+    | OnBlur a
+    | OnCancel a
+    | OnCanPlay a
+    | OnCanPlayThrough a
+    | OnChange a
+    | OnClick a
+    | OnClose a
+    | OnContextMenu a
+    | OnCopy a
+    | OnCueChange a
+    | OnCut a
+    | OnDblClick a
+    | OnDrag a
+    | OnDragEnd a
+    | OnDragEnter a
+    | OnDragLeave a
+    | OnDragOver a
+    | OnDragStart a
+    | OnDrop a
+    | OnDurationChange a
+    | OnEmptied a
+    | OnEnded a
+    | OnError a
+    | OnFocus a
+    | OnFormData a
+    | OnHashChange a
+    | OnInput a
+    | OnInvalid a
+    | OnKeyDown a
+    | OnKeyPress a
+    | OnKeyup a
+    | OnLanguageChange a
+    | OnLoad a
+    | OnLoadedData a
+    | OnLoadedMetaData a
+    | OnLoadStart a
+    | OnMessage a
+    | OnMessageError a
+    | OnMouseDown a
+    | OnMouseEnter a
+    | OnMouseLeave a
+    | OnMouseMove a
+    | OnMouseOut a
+    | OnMouseOver a
+    | OnMouseUp a
+    | OnOffline a
+    | OnOnline a
+    | OnPageHide a
+    | OnPageShow a
+    | OnPaste a
+    | OnPause a
+    | OnPlay a
+    | OnPlaying a
+    | OnPopState a
+    | OnProgress a
+    | OnRateChange a
+    | OnRejectionHandled a
+    | OnReset a
+    | OnResize a
+    | OnScroll a
+    | OnSecurityPolicyViolation a
+    | OnSeeked a
+    | OnSeeking a
+    | OnSelect a
+    | OnSlotChange a
+    | OnStalled a
+    | OnStorage a
+    | OnSubmit a
+    | OnSuspend a
+    | OnTimeUpdate a
+    | OnToggle a
+    | OnUnhandledRejection a
+    | OnUnload a
+    | OnVolumeChange a
+    | OnWaiting a
+    | OnWheel a
     | Open a
     | Optimum a
     | Pattern a
     | Ping a
     | Placeholder a
-    | Playsinline a
+    | PlaysInline a
     | Poster a
     | Preload a
     | Readonly a
-    | Referrerpolicy a
+    | ReferrerPolicy a
     | Rel a
     | Required a
     | Reversed a
@@ -189,40 +189,40 @@ data Attribute a =
     | Sizes a
     | Slot a
     | Span a
-    | Spellcheck a
+    | SpellCheck a
     | Src a
     | Srcdoc a
-    | Srclang a
-    | Srcset a
+    | SrcLang a
+    | SrcSet a
     | Start a
     | Step a
     | Style a
-    | Tabindex a
+    | TabIndex a
     | Target a
     | Title a
     | Translate a
     | Type a
-    | Usemap a
+    | UseMap a
     | Value a
     | Width a
     | Wrap a
     deriving (Show)
 
-abbr, accept, acceptCharset, accesskey, action, allow, allowfullscreen, alt, as, async, autocapitalize, autocomplete, autofocus, autoplay, charset, checked, cite, class_, color, cols, colspan, content, contenteditable, controls, coords, crossorigin, data_, datetime, decoding, default_, defer, dir, dirname, disabled, download, draggable, enctype, enterkeyhint, for, form, formaction, formenctype, formmethod, formnovalidate, formtarget, headers, height, hidden, high, href, hreflang, httpEquiv, id, imagesizes, imagesrcset, inputmode, integrity, is, ismap, itemid, itemprop, itemref, itemscope, itemtype, kind, label, lang, list, loading, loop, low, max, maxlength, media, method, min, minlength, multiple, muted, name, nomodule, nonce, novalidate, onabort, onafterprint, onauxclick, onbeforeprint, onbeforeunload, onblur, oncancel, oncanplay, oncanplaythrough, onchange, onclick, onclose, oncontextmenu, oncopy, oncuechange, oncut, ondblclick, ondrag, ondragend, ondragenter, ondragleave, ondragover, ondragstart, ondrop, ondurationchange, onemptied, onended, onerror, onfocus, onformdata, onhashchange, oninput, oninvalid, onkeydown, onkeypress, onkeyup, onlanguagechange, onload, onloadeddata, onloadedmetadata, onloadstart, onmessage, onmessageerror, onmousedown, onmouseenter, onmouseleave, onmousemove, onmouseout, onmouseover, onmouseup, onoffline, ononline, onpagehide, onpageshow, onpaste, onpause, onplay, onplaying, onpopstate, onprogress, onratechange, onrejectionhandled, onreset, onresize, onscroll, onsecuritypolicyviolation, onseeked, onseeking, onselect, onslotchange, onstalled, onstorage, onsubmit, onsuspend, ontimeupdate, ontoggle, onunhandledrejection, onunload, onvolumechange, onwaiting, onwheel, open, optimum, pattern_, ping, placeholder, playsinline, poster, preload, readonly, referrerpolicy, rel, required, reversed, rows, rowspan, sandbox, scope, selected, shape, size, sizes, slot, span, spellcheck, src, srcdoc, srclang, srcset, start, step, style, tabindex, target, title, translate, type_, usemap, value, width, wrap :: a -> Attribute a
+abbr, accept, acceptCharset, accessKey, action, allow, allowFullScreen, alt, as, async, autoCapitalize, autoComplete, autoFocus, autoPlay, charset, checked, cite, class_, color, cols, colspan, content, contentEditable, controls, coords, crossOrigin, data_, dateTime, decoding, default_, defer, dir, dirname, disabled, downLoad, draggable, enctype, enterKeyHint, for, form, formAction, formEnctype, formMethod, formNoValidate, formTarget, headers, height, hidden, high, href, hrefLang, httpEquiv, id, imageSizes, imageSrcSet, inputMode, integrity, is, isMap, itemId, itemProp, itemRef, itemScope, itemType, kind, label, lang, list, loading, loop, low, max, maxLength, media, method, min, minLength, multiple, muted, name, noModule, nonce, noValidate, onAbort, onAfterPrint, onAuxClick, onBeforePrint, onBeforeUnload, onBlur, onCancel, onCanPlay, onCanPlayThrough, onChange, onClick, onClose, onContextMenu, onCopy, onCueChange, onCut, onDblClick, onDrag, onDragEnd, onDragEnter, onDragLeave, onDragOver, onDragStart, onDrop, onDurationChange, onEmptied, onEnded, onError, onFocus, onFormData, onHashChange, onInput, onInvalid, onKeyDown, onKeyPress, onKeyup, onLanguageChange, onLoad, onLoadedData, onLoadedMetaData, onLoadStart, onMessage, onMessageError, onMouseDown, onMouseEnter, onMouseLeave, onMouseMove, onMouseOut, onMouseOver, onMouseUp, onOffline, onOnline, onPageHide, onPageShow, onPaste, onPause, onPlay, onPlaying, onPopState, onProgress, onRateChange, onRejectionHandled, onReset, onResize, onScroll, onSecurityPolicyViolation, onSeeked, onSeeking, onSelect, onSlotChange, onStalled, onStorage, onSubmit, onSuspend, onTimeUpdate, onToggle, onUnhandledRejection, onUnload, onVolumeChange, onWaiting, onWheel, open, optimum, pattern_, ping, placeholder, playsInline, poster, preload, readonly, referrerPolicy, rel, required, reversed, rows, rowspan, sandbox, scope, selected, shape, size, sizes, slot, span, spellCheck, src, srcdoc, srcLang, srcSet, start, step, style, tabIndex, target, title, translate, type_, useMap, value, width, wrap :: a -> Attribute a
 abbr = Abbr
 accept = Accept
 acceptCharset = AcceptCharset
-accesskey = Accesskey
+accessKey = AccessKey
 action = Action
 allow = Allow
-allowfullscreen = Allowfullscreen
+allowFullScreen = AllowFullScreen
 alt = Alt
 as = As
 async = Async
-autocapitalize = Autocapitalize
-autocomplete = Autocomplete
-autofocus = Autofocus
-autoplay = Autoplay
+autoCapitalize = AutoCapitalize
+autoComplete = AutoComplete
+autoFocus = AutoFocus
+autoPlay = AutoPlay
 charset = Charset
 checked = Checked
 cite = Cite
@@ -231,48 +231,48 @@ color = Color
 cols = Cols
 colspan = Colspan
 content = Content
-contenteditable = Contenteditable
+contentEditable = ContentEditable
 controls = Controls
 coords = Coords
-crossorigin = Crossorigin
+crossOrigin = CrossOrigin
 data_ = Data
-datetime = Datetime
+dateTime = DateTime
 decoding = Decoding
 default_ = Default
 defer = Defer
 dir = Dir
 dirname = Dirname
 disabled = Disabled
-download = Download
+downLoad = DownLoad
 draggable = Draggable
 enctype = Enctype
-enterkeyhint = Enterkeyhint
+enterKeyHint = EnterKeyHint
 for = For
 form = Form
-formaction = Formaction
-formenctype = Formenctype
-formmethod = Formmethod
-formnovalidate = Formnovalidate
-formtarget = Formtarget
+formAction = FormAction
+formEnctype = FormEnctype
+formMethod = FormMethod
+formNoValidate = FormNoValidate
+formTarget = FormTarget
 headers = Headers
 height = Height
 hidden = Hidden
 high = High
 href = Href
-hreflang = Hreflang
+hrefLang = HrefLang
 httpEquiv = HttpEquiv
 id = Id
-imagesizes = Imagesizes
-imagesrcset = Imagesrcset
-inputmode = Inputmode
+imageSizes = ImageSizes
+imageSrcSet = ImageSrcSet
+inputMode = InputMode
 integrity = Integrity
 is = Is
-ismap = Ismap
-itemid = Itemid
-itemprop = Itemprop
-itemref = Itemref
-itemscope = Itemscope
-itemtype = Itemtype
+isMap = IsMap
+itemId = ItemId
+itemProp = ItemProp
+itemRef = ItemRef
+itemScope = ItemScope
+itemType = ItemType
 kind = Kind
 label = Label
 lang = Lang
@@ -281,108 +281,108 @@ loading = Loading
 loop = Loop
 low = Low
 max = Max
-maxlength = Maxlength
+maxLength = MaxLength
 media = Media
 method = Method
 min = Min
-minlength = Minlength
+minLength = MinLength
 multiple = Multiple
 muted = Muted
 name = Name
-nomodule = Nomodule
+noModule = NoModule
 nonce = Nonce
-novalidate = Novalidate
-onabort = Onabort
-onafterprint = Onafterprint
-onauxclick = Onauxclick
-onbeforeprint = Onbeforeprint
-onbeforeunload = Onbeforeunload
-onblur = Onblur
-oncancel = Oncancel
-oncanplay = Oncanplay
-oncanplaythrough = Oncanplaythrough
-onchange = Onchange
-onclick = Onclick
-onclose = Onclose
-oncontextmenu = Oncontextmenu
-oncopy = Oncopy
-oncuechange = Oncuechange
-oncut = Oncut
-ondblclick = Ondblclick
-ondrag = Ondrag
-ondragend = Ondragend
-ondragenter = Ondragenter
-ondragleave = Ondragleave
-ondragover = Ondragover
-ondragstart = Ondragstart
-ondrop = Ondrop
-ondurationchange = Ondurationchange
-onemptied = Onemptied
-onended = Onended
-onerror = Onerror
-onfocus = Onfocus
-onformdata = Onformdata
-onhashchange = Onhashchange
-oninput = Oninput
-oninvalid = Oninvalid
-onkeydown = Onkeydown
-onkeypress = Onkeypress
-onkeyup = Onkeyup
-onlanguagechange = Onlanguagechange
-onload = Onload
-onloadeddata = Onloadeddata
-onloadedmetadata = Onloadedmetadata
-onloadstart = Onloadstart
-onmessage = Onmessage
-onmessageerror = Onmessageerror
-onmousedown = Onmousedown
-onmouseenter = Onmouseenter
-onmouseleave = Onmouseleave
-onmousemove = Onmousemove
-onmouseout = Onmouseout
-onmouseover = Onmouseover
-onmouseup = Onmouseup
-onoffline = Onoffline
-ononline = Ononline
-onpagehide = Onpagehide
-onpageshow = Onpageshow
-onpaste = Onpaste
-onpause = Onpause
-onplay = Onplay
-onplaying = Onplaying
-onpopstate = Onpopstate
-onprogress = Onprogress
-onratechange = Onratechange
-onrejectionhandled = Onrejectionhandled
-onreset = Onreset
-onresize = Onresize
-onscroll = Onscroll
-onsecuritypolicyviolation = Onsecuritypolicyviolation
-onseeked = Onseeked
-onseeking = Onseeking
-onselect = Onselect
-onslotchange = Onslotchange
-onstalled = Onstalled
-onstorage = Onstorage
-onsubmit = Onsubmit
-onsuspend = Onsuspend
-ontimeupdate = Ontimeupdate
-ontoggle = Ontoggle
-onunhandledrejection = Onunhandledrejection
-onunload = Onunload
-onvolumechange = Onvolumechange
-onwaiting = Onwaiting
-onwheel = Onwheel
+noValidate = NoValidate
+onAbort = OnAbort
+onAfterPrint = OnAfterPrint
+onAuxClick = OnAuxClick
+onBeforePrint = OnBeforePrint
+onBeforeUnload = OnBeforeUnload
+onBlur = OnBlur
+onCancel = OnCancel
+onCanPlay = OnCanPlay
+onCanPlayThrough = OnCanPlayThrough
+onChange = OnChange
+onClick = OnClick
+onClose = OnClose
+onContextMenu = OnContextMenu
+onCopy = OnCopy
+onCueChange = OnCueChange
+onCut = OnCut
+onDblClick = OnDblClick
+onDrag = OnDrag
+onDragEnd = OnDragEnd
+onDragEnter = OnDragEnter
+onDragLeave = OnDragLeave
+onDragOver = OnDragOver
+onDragStart = OnDragStart
+onDrop = OnDrop
+onDurationChange = OnDurationChange
+onEmptied = OnEmptied
+onEnded = OnEnded
+onError = OnError
+onFocus = OnFocus
+onFormData = OnFormData
+onHashChange = OnHashChange
+onInput = OnInput
+onInvalid = OnInvalid
+onKeyDown = OnKeyDown
+onKeyPress = OnKeyPress
+onKeyup = OnKeyup
+onLanguageChange = OnLanguageChange
+onLoad = OnLoad
+onLoadedData = OnLoadedData
+onLoadedMetaData = OnLoadedMetaData
+onLoadStart = OnLoadStart
+onMessage = OnMessage
+onMessageError = OnMessageError
+onMouseDown = OnMouseDown
+onMouseEnter = OnMouseEnter
+onMouseLeave = OnMouseLeave
+onMouseMove = OnMouseMove
+onMouseOut = OnMouseOut
+onMouseOver = OnMouseOver
+onMouseUp = OnMouseUp
+onOffline = OnOffline
+onOnline = OnOnline
+onPageHide = OnPageHide
+onPageShow = OnPageShow
+onPaste = OnPaste
+onPause = OnPause
+onPlay = OnPlay
+onPlaying = OnPlaying
+onPopState = OnPopState
+onProgress = OnProgress
+onRateChange = OnRateChange
+onRejectionHandled = OnRejectionHandled
+onReset = OnReset
+onResize = OnResize
+onScroll = OnScroll
+onSecurityPolicyViolation = OnSecurityPolicyViolation
+onSeeked = OnSeeked
+onSeeking = OnSeeking
+onSelect = OnSelect
+onSlotChange = OnSlotChange
+onStalled = OnStalled
+onStorage = OnStorage
+onSubmit = OnSubmit
+onSuspend = OnSuspend
+onTimeUpdate = OnTimeUpdate
+onToggle = OnToggle
+onUnhandledRejection = OnUnhandledRejection
+onUnload = OnUnload
+onVolumeChange = OnVolumeChange
+onWaiting = OnWaiting
+onWheel = OnWheel
 open = Open
 optimum = Optimum
 pattern_ = Pattern
 ping = Ping
 placeholder = Placeholder
-playsinline = Playsinline
+playsInline = PlaysInline
 poster = Poster
 preload = Preload
 readonly = Readonly
-referrerpolicy = Referrerpolicy
+referrerPolicy = ReferrerPolicy
 rel = Rel
 required = Required
 reversed = Reversed
@@ -396,20 +396,20 @@ size = Size
 sizes = Sizes
 slot = Slot
 span = Span
-spellcheck = Spellcheck
+spellCheck = SpellCheck
 src = Src
 srcdoc = Srcdoc
-srclang = Srclang
-srcset = Srcset
+srcLang = SrcLang
+srcSet = SrcSet
 start = Start
 step = Step
 style = Style
-tabindex = Tabindex
+tabIndex = TabIndex
 target = Target
 title = Title
 translate = Translate
 type_ = Type
-usemap = Usemap
+useMap = UseMap
 value = Value
 width = Width
 wrap = Wrap
