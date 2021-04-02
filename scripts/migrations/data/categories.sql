@@ -1,4 +1,4 @@
-/* Generated. See index_spec.js. */
+/* Generated. See gentool.js. */
 PRAGMA foreign_keys = ON;
 INSERT INTO categories (name) VALUES
     ('autocapitalize-inheriting-elements'),

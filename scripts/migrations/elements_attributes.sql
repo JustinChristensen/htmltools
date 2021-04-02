@@ -1,6 +1,6 @@
 PRAGMA foreign_keys = ON;
 INSERT INTO elements_attributes (element, attribute, "constraint") VALUES
-    ('a', 'Global attributes', NULL),
+    ('a', 'global-attributes', NULL),
     ('a', 'href', NULL),
     ('a', 'target', NULL),
     ('a', 'download', NULL),
@@ -10,11 +10,11 @@ INSERT INTO elements_attributes (element, attribute, "constraint") VALUES
     ('a', 'type', NULL),
     ('a', 'referrerpolicy', NULL),
 
-    ('abbr', 'Global attributes', NULL),
+    ('abbr', 'global-attributes', NULL),
 
-    ('address', 'Global attributes', NULL),
+    ('address', 'global-attributes', NULL),
 
-    ('area', 'Global attributes', NULL),
+    ('area', 'global-attributes', NULL),
     ('area', 'alt', NULL),
     ('area', 'coords', NULL),
     ('area', 'shape', NULL),
@@ -25,11 +25,11 @@ INSERT INTO elements_attributes (element, attribute, "constraint") VALUES
     ('area', 'rel', NULL),
     ('area', 'referrerpolicy', NULL),
 
-    ('article', 'Global attributes', NULL),
+    ('article', 'global-attributes', NULL),
 
-    ('aside', 'Global attributes', NULL),
+    ('aside', 'global-attributes', NULL),
 
-    ('audio', 'Global attributes', NULL),
+    ('audio', 'global-attributes', NULL),
     ('audio', 'src', NULL),
     ('audio', 'crossorigin', NULL),
     ('audio', 'preload', NULL),
@@ -38,21 +38,21 @@ INSERT INTO elements_attributes (element, attribute, "constraint") VALUES
     ('audio', 'muted', NULL),
     ('audio', 'controls', NULL),
 
-    ('b', 'Global attributes', NULL),
+    ('b', 'global-attributes', NULL),
 
-    ('base', 'Global attributes', NULL),
+    ('base', 'global-attributes', NULL),
     ('base', 'href', NULL),
     ('base', 'target', NULL),
 
-    ('bdi', 'Global attributes', NULL),
+    ('bdi', 'global-attributes', NULL),
 
-    ('bdo', 'Global attributes', NULL),
+    ('bdo', 'global-attributes', NULL),
 
-    ('blockquote', 'Global attributes', NULL),
+    ('blockquote', 'global-attributes', NULL),
     ('blockquote', 'cite', NULL),
 
     /* TODO: event listeners */
-    ('body', 'Global attributes', NULL),
+    ('body', 'global-attributes', NULL),
     ('body', 'onafterprint', NULL),
     ('body', 'onbeforeprint', NULL),
     ('body', 'onbeforeunload', NULL),
@@ -70,9 +70,9 @@ INSERT INTO elements_attributes (element, attribute, "constraint") VALUES
     ('body', 'onunhandledrejection', NULL),
     ('body', 'onunload', NULL),
 
-    ('br', 'Global attributes', NULL),
+    ('br', 'global-attributes', NULL),
 
-    ('button', 'Global attributes', NULL),
+    ('button', 'global-attributes', NULL),
     ('button', 'disabled', NULL),
     ('button', 'form', NULL),
     ('button', 'formaction', NULL),
@@ -84,69 +84,69 @@ INSERT INTO elements_attributes (element, attribute, "constraint") VALUES
     ('button', 'type', NULL),
     ('button', 'value', NULL),
 
-    ('canvas', 'Global attributes', NULL),
+    ('canvas', 'global-attributes', NULL),
     ('canvas', 'width', NULL),
     ('canvas', 'height', NULL),
 
-    ('caption', 'Global attributes', NULL),
+    ('caption', 'global-attributes', NULL),
 
-    ('cite', 'Global attributes', NULL),
+    ('cite', 'global-attributes', NULL),
 
-    ('code', 'Global attributes', NULL),
+    ('code', 'global-attributes', NULL),
 
-    ('col', 'Global attributes', NULL),
+    ('col', 'global-attributes', NULL),
     ('col', 'span', NULL),
 
-    ('colgroup', 'Global attributes', NULL),
+    ('colgroup', 'global-attributes', NULL),
     ('colgroup', 'span', NULL),
 
-    ('data', 'Global attributes', NULL),
+    ('data', 'global-attributes', NULL),
     ('data', 'value', NULL),
 
-    ('datalist', 'Global attributes', NULL),
+    ('datalist', 'global-attributes', NULL),
 
-    ('dd', 'Global attributes', NULL),
+    ('dd', 'global-attributes', NULL),
 
-    ('del', 'Global attributes', NULL),
+    ('del', 'global-attributes', NULL),
     ('del', 'cite', NULL),
     ('del', 'datetime', NULL),
 
-    ('details', 'Global attributes', NULL),
+    ('details', 'global-attributes', NULL),
     ('details', 'open', NULL),
 
-    ('dfn', 'Global attributes', NULL),
+    ('dfn', 'global-attributes', NULL),
    
-    ('dialog', 'Global attributes', NULL),
+    ('dialog', 'global-attributes', NULL),
     ('dialog', 'open', NULL),
     
-    ('div', 'Global attributes', NULL),
+    ('div', 'global-attributes', NULL),
 
-    ('dl', 'Global attributes', NULL),
+    ('dl', 'global-attributes', NULL),
 
-    ('dt', 'Global attributes', NULL),
+    ('dt', 'global-attributes', NULL),
 
-    ('em', 'Global attributes', NULL),
+    ('em', 'global-attributes', NULL),
 
     /* TODO: namespace-less attributes for pass-through */
-    ('embed', 'Global attributes', NULL),
+    ('embed', 'global-attributes', NULL),
     ('embed', 'src', NULL),    
     ('embed', 'type', NULL),
     ('embed', 'width', NULL),
     ('embed', 'height', NULL),
     ('embed', 'itemprop', 'has-src-attribute'),
 
-    ('fieldset', 'Global attributes', NULL),
+    ('fieldset', 'global-attributes', NULL),
     ('fieldset', 'disabled', NULL),
     ('fieldset', 'form', NULL),
     ('fieldset', 'name', NULL),
 
-    ('figcaption', 'Global attributes', NULL),
+    ('figcaption', 'global-attributes', NULL),
 
-    ('figure', 'Global attributes', NULL),
+    ('figure', 'global-attributes', NULL),
 
-    ('footer', 'Global attributes', NULL),
+    ('footer', 'global-attributes', NULL),
 
-    ('form', 'Global attributes', NULL),
+    ('form', 'global-attributes', NULL),
     ('form', 'accept-charset', NULL),
     ('form', 'action', NULL),
     ('form', 'autocomplete', NULL),
@@ -157,27 +157,27 @@ INSERT INTO elements_attributes (element, attribute, "constraint") VALUES
     ('form', 'target', NULL),
     ('form', 'rel', NULL),
 
-    ('h1', 'Global attributes', NULL),
-    ('h2', 'Global attributes', NULL),
-    ('h3', 'Global attributes', NULL),
-    ('h4', 'Global attributes', NULL),
-    ('h5', 'Global attributes', NULL),
-    ('h6', 'Global attributes', NULL),
+    ('h1', 'global-attributes', NULL),
+    ('h2', 'global-attributes', NULL),
+    ('h3', 'global-attributes', NULL),
+    ('h4', 'global-attributes', NULL),
+    ('h5', 'global-attributes', NULL),
+    ('h6', 'global-attributes', NULL),
 
-    ('head', 'Global attributes', NULL),
+    ('head', 'global-attributes', NULL),
 
-    ('header', 'Global attributes', NULL),
+    ('header', 'global-attributes', NULL),
 
-    ('hgroup', 'Global attributes', NULL),
+    ('hgroup', 'global-attributes', NULL),
 
-    ('hr', 'Global attributes', NULL),
+    ('hr', 'global-attributes', NULL),
 
     /* TODO: obsolete attributes https://html.spec.whatwg.org/multipage/obsolete.html#attr-html-manifest */
-    ('html', 'Global attributes', NULL),
+    ('html', 'global-attributes', NULL),
 
-    ('i', 'Global attributes', NULL),
+    ('i', 'global-attributes', NULL),
 
-    ('iframe', 'Global attributes', NULL),
+    ('iframe', 'global-attributes', NULL),
     ('iframe', 'src', NULL),
     ('iframe', 'srcdoc', NULL),
     ('iframe', 'name', NULL),
@@ -190,7 +190,7 @@ INSERT INTO elements_attributes (element, attribute, "constraint") VALUES
     ('iframe', 'loading', NULL),
     ('iframe', 'itemprop', 'has-src-attribute'),
 
-    ('img', 'Global attributes', NULL),
+    ('img', 'global-attributes', NULL),
     ('img', 'alt', NULL),
     ('img', 'src', NULL),
     ('img', 'srcset', NULL),
@@ -204,7 +204,7 @@ INSERT INTO elements_attributes (element, attribute, "constraint") VALUES
     ('img', 'decoding', NULL),
     ('img', 'loading', NULL),
 
-    ('input', 'Global attributes', NULL),
+    ('input', 'global-attributes', NULL),
     ('input', 'accept', NULL),
     ('input', 'alt', NULL),
     ('input', 'autocomplete', NULL),
@@ -236,21 +236,21 @@ INSERT INTO elements_attributes (element, attribute, "constraint") VALUES
     ('input', 'value', NULL),
     ('input', 'width', NULL),
 
-    ('ins', 'Global attributes', NULL),
+    ('ins', 'global-attributes', NULL),
     ('ins', 'cite', NULL),
     ('ins', 'datetime', NULL),
 
-    ('kbd', 'Global attributes', NULL),
+    ('kbd', 'global-attributes', NULL),
 
-    ('label', 'Global attributes', NULL),
+    ('label', 'global-attributes', NULL),
     ('label', 'for', NULL),
 
-    ('legend', 'Global attributes', NULL),
+    ('legend', 'global-attributes', NULL),
 
-    ('li', 'Global attributes', NULL),
+    ('li', 'global-attributes', NULL),
     ('li', 'value', 'child-of-ol'),
 
-    ('link', 'Global attributes', NULL),
+    ('link', 'global-attributes', NULL),
     ('link', 'href', NULL),
     ('link', 'crossorigin', NULL),
     ('link', 'rel', NULL),
@@ -266,24 +266,24 @@ INSERT INTO elements_attributes (element, attribute, "constraint") VALUES
     ('link', 'color', NULL),
     ('link', 'disabled', NULL),
 
-    ('main', 'Global attributes', NULL),
+    ('main', 'global-attributes', NULL),
 
-    ('map', 'Global attributes', NULL),
+    ('map', 'global-attributes', NULL),
     ('map', 'name', NULL),
 
-    ('mark', 'Global attributes', NULL),
+    ('mark', 'global-attributes', NULL),
 
-    ('math', 'Global attributes', NULL),    /* TODO: math elements */
+    ('math', 'global-attributes', NULL),    /* TODO: math elements */
 
-    ('menu', 'Global attributes', NULL),
+    ('menu', 'global-attributes', NULL),
 
-    ('meta', 'Global attributes', NULL),
+    ('meta', 'global-attributes', NULL),
     ('meta', 'name', NULL),
     ('meta', 'http-equiv', NULL),
     ('meta', 'content', NULL),
     ('meta', 'charset', NULL),
 
-    ('meter', 'Global attributes', NULL),
+    ('meter', 'global-attributes', NULL),
     ('meter', 'value', NULL),
     ('meter', 'min', NULL),
     ('meter', 'max', NULL),
@@ -291,11 +291,11 @@ INSERT INTO elements_attributes (element, attribute, "constraint") VALUES
     ('meter', 'high', NULL),
     ('meter', 'optimum', NULL),
 
-    ('nav', 'Global attributes', NULL),
+    ('nav', 'global-attributes', NULL),
 
-    ('noscript', 'Global attributes', NULL),
+    ('noscript', 'global-attributes', NULL),
 
-    ('object', 'Global attributes', NULL),
+    ('object', 'global-attributes', NULL),
     ('object', 'data', NULL),
     ('object', 'type', NULL),
     ('object', 'name', NULL),
@@ -303,54 +303,54 @@ INSERT INTO elements_attributes (element, attribute, "constraint") VALUES
     ('object', 'width', NULL),
     ('object', 'height', NULL),
 
-    ('ol', 'Global attributes', NULL),
+    ('ol', 'global-attributes', NULL),
     ('ol', 'reversed', NULL),
     ('ol', 'start', NULL),
     ('ol', 'type', NULL),
 
-    ('optgroup', 'Global attributes', NULL),
+    ('optgroup', 'global-attributes', NULL),
     ('optgroup', 'disabled', NULL),
     ('optgroup', 'label', NULL),
 
-    ('option', 'Global attributes', NULL),
+    ('option', 'global-attributes', NULL),
     ('option', 'disabled', NULL),
     ('option', 'label', NULL),
     ('option', 'selected', NULL),
     ('option', 'value', NULL),
 
-    ('output', 'Global attributes', NULL),
+    ('output', 'global-attributes', NULL),
     ('output', 'for', NULL),
     ('output', 'form', NULL),
     ('output', 'name', NULL),
 
-    ('p', 'Global attributes', NULL),
+    ('p', 'global-attributes', NULL),
 
-    ('param', 'Global attributes', NULL),
+    ('param', 'global-attributes', NULL),
     ('param', 'name', NULL),
     ('param', 'value', NULL),
 
-    ('picture', 'Global attributes', NULL),
+    ('picture', 'global-attributes', NULL),
 
-    ('pre', 'Global attributes', NULL),
+    ('pre', 'global-attributes', NULL),
 
-    ('progress', 'Global attributes', NULL),
+    ('progress', 'global-attributes', NULL),
     ('progress', 'value', NULL),
     ('progress', 'max', NULL),
 
-    ('q', 'Global attributes', NULL),
+    ('q', 'global-attributes', NULL),
     ('q', 'cite', NULL),
 
-    ('rp', 'Global attributes', NULL),
+    ('rp', 'global-attributes', NULL),
 
-    ('rt', 'Global attributes', NULL),
+    ('rt', 'global-attributes', NULL),
 
-    ('ruby', 'Global attributes', NULL),
+    ('ruby', 'global-attributes', NULL),
 
-    ('s', 'Global attributes', NULL),
+    ('s', 'global-attributes', NULL),
 
-    ('samp', 'Global attributes', NULL),
+    ('samp', 'global-attributes', NULL),
 
-    ('script', 'Global attributes', NULL),
+    ('script', 'global-attributes', NULL),
     ('script', 'src', NULL),
     ('script', 'type', NULL),
     ('script', 'nomodule', NULL),
@@ -360,9 +360,9 @@ INSERT INTO elements_attributes (element, attribute, "constraint") VALUES
     ('script', 'integrity', NULL),
     ('script', 'referrerpolicy', NULL),
 
-    ('section', 'Global attributes', NULL),
+    ('section', 'global-attributes', NULL),
 
-    ('select', 'Global attributes', NULL),
+    ('select', 'global-attributes', NULL),
     ('select', 'autocomplete', NULL),
     ('select', 'disabled', NULL),
     ('select', 'form', NULL),
@@ -371,12 +371,12 @@ INSERT INTO elements_attributes (element, attribute, "constraint") VALUES
     ('select', 'required', NULL),
     ('select', 'size', NULL),
 
-    ('slot', 'Global attributes', NULL),
+    ('slot', 'global-attributes', NULL),
     ('slot', 'name', NULL),
 
-    ('small', 'Global attributes', NULL),
+    ('small', 'global-attributes', NULL),
 
-    ('source', 'Global attributes', NULL),
+    ('source', 'global-attributes', NULL),
     ('source', 'type', NULL),
     ('source', 'src', 'child-of-video-or-audio'),
     ('source', 'srcset', 'child-of-picture'),
@@ -385,33 +385,33 @@ INSERT INTO elements_attributes (element, attribute, "constraint") VALUES
     ('source', 'width', 'child-of-picture'),
     ('source', 'height', 'child-of-picture'),
 
-    ('span', 'Global attributes', NULL),
+    ('span', 'global-attributes', NULL),
 
-    ('strong', 'Global attributes', NULL),
+    ('strong', 'global-attributes', NULL),
 
-    ('style', 'Global attributes', NULL),
+    ('style', 'global-attributes', NULL),
     ('style', 'media', NULL),
 
-    ('sub', 'Global attributes', NULL),
+    ('sub', 'global-attributes', NULL),
 
-    ('summary', 'Global attributes', NULL),
+    ('summary', 'global-attributes', NULL),
 
-    ('sup', 'Global attributes', NULL),
+    ('sup', 'global-attributes', NULL),
 
-    ('svg', 'Global attributes', NULL),         /* TODO: SVG */
+    ('svg', 'global-attributes', NULL),         /* TODO: SVG */
 
-    ('table', 'Global attributes', NULL),
+    ('table', 'global-attributes', NULL),
 
-    ('tbody', 'Global attributes', NULL),
+    ('tbody', 'global-attributes', NULL),
 
-    ('td', 'Global attributes', NULL),
+    ('td', 'global-attributes', NULL),
     ('td', 'colspan', NULL),
     ('td', 'rowspan', NULL),
     ('td', 'headers', NULL),
 
-    ('template', 'Global attributes', NULL),
+    ('template', 'global-attributes', NULL),
 
-    ('textarea', 'Global attributes', NULL),
+    ('textarea', 'global-attributes', NULL),
     ('textarea', 'autocomplete', NULL),
     ('textarea', 'cols', NULL),
     ('textarea', 'dirname', NULL),
@@ -426,38 +426,38 @@ INSERT INTO elements_attributes (element, attribute, "constraint") VALUES
     ('textarea', 'rows', NULL),
     ('textarea', 'wrap', NULL),
 
-    ('tfoot', 'Global attributes', NULL),
+    ('tfoot', 'global-attributes', NULL),
 
-    ('th', 'Global attributes', NULL),
+    ('th', 'global-attributes', NULL),
     ('th', 'colspan', NULL),
     ('th', 'rowspan', NULL),
     ('th', 'headers', NULL),
     ('th', 'scope', NULL),
     ('th', 'abbr', NULL),
 
-    ('thead', 'Global attributes', NULL),
+    ('thead', 'global-attributes', NULL),
 
-    ('time', 'Global attributes', NULL),
+    ('time', 'global-attributes', NULL),
     ('time', 'datetime', NULL),
 
-    ('title', 'Global attributes', NULL),
+    ('title', 'global-attributes', NULL),
 
-    ('tr', 'Global attributes', NULL),
+    ('tr', 'global-attributes', NULL),
 
-    ('track', 'Global attributes', NULL),
+    ('track', 'global-attributes', NULL),
     ('track', 'kind', NULL),
     ('track', 'src', NULL),
     ('track', 'srclang', NULL),
     ('track', 'label', NULL),
     ('track', 'default', NULL),
 
-    ('u', 'Global attributes', NULL),
+    ('u', 'global-attributes', NULL),
 
-    ('ul', 'Global attributes', NULL),
+    ('ul', 'global-attributes', NULL),
 
-    ('var', 'Global attributes', NULL),
+    ('var', 'global-attributes', NULL),
 
-    ('video', 'Global attributes', NULL),
+    ('video', 'global-attributes', NULL),
     ('video', 'src', NULL),
     ('video', 'crossorigin', NULL),
     ('video', 'poster', NULL),
@@ -470,6 +470,6 @@ INSERT INTO elements_attributes (element, attribute, "constraint") VALUES
     ('video', 'width', NULL),
     ('video', 'height', NULL),
 
-    ('wbr', 'Global attributes', NULL)
+    ('wbr', 'global-attributes', NULL)
 
 ON CONFLICT DO NOTHING;

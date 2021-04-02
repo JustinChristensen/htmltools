@@ -4,37 +4,9 @@ const yargs = require('yargs')
 const { hideBin } = require('yargs/helpers')
 const { get } = require('https');
 const { existsSync, readFileSync, writeFileSync, mkdirSync } = require('fs');
-const { basename } = require('path');
 const { parse: parseHtml } = require('parse5');
-
-const config = {
-    indexUrl: 'https://html.spec.whatwg.org/multipage/indices.html',
-    migrationsDir: 'migrations',
-    tmpDir: 'tmp',
-    dataDir: 'data',
-    dropList: [
-        'MathML',
-        'SVG',
-        'autonomous custom elements',
-        'Text',
-        'form-associated custom elements'
-    ],
-
-    // db tables 
-    elementsTable: 'elements',
-    attributesTable: 'attributes',
-    categoriesTable: 'categories',
-    categoriesElementsTable: 'categories_elements',
-
-    globalAttrsName: 'Global attributes'
-};    
-
-config.tmpIndexHtmlFile = `${config.tmpDir}/${basename(config.indexUrl)}`;
-
-config.elementsSqlFile = `${config.migrationsDir}/${config.dataDir}/elements.sql`;
-config.categoriesSqlFile = `${config.migrationsDir}/${config.dataDir}/categories.sql`;
-config.attributesSqlFile = `${config.migrationsDir}/${config.dataDir}/attributes.sql`;
-config.categoriesElementsSqlFile = `${config.migrationsDir}/${config.dataDir}/categories_elements.sql`;
+const genHaskell = require('./haskell');
+const { config } = require('./config');
 
 // spec elements table columns
 const ET = {
@@ -58,10 +30,9 @@ const fatal = msg => (console.error(msg), process.exit(1));
 const dropRE = new RegExp(config.dropList.join('|'));
 const dropStrings = arr => arr.map(v => v.replace(dropRE, '').trim()).filter(v => v !== '');
 
-const uniq = arr => arr.filter((v, i) => arr.indexOf(v) === i);
+const noop = () => {};
+const uniq = arr => Array.from(new Set(arr));
 const toKebabCase = s => s.toLowerCase().split(' ').join('-');
-
-const inDir = (path, fn) => () => (mkdirSync(path, { recursive: true }), fn());
 
 const getUrl = url => new Promise((resolve, reject) => {
     get(url, res => {
@@ -101,7 +72,6 @@ const selectNodes = (node, matches = constFalse) => {
 const selectTables = node => selectNodes(node, node => node.tagName === 'table');
 const selectText = node => selectNodes(node, node => node.nodeName === '#text');
 
-const noop = () => {};
 const eachRow = (table, fn = noop) => {
     const tbody = table.childNodes[2];
     return tbody.childNodes.forEach(fn);
@@ -163,7 +133,7 @@ const unlessFileExists = (file, fn = noop) => new Promise((resolve, reject) => {
     r.finally(resolve);
 });
 
-const generated = '/* Generated. See index_spec.js. */'
+const generated = '/* Generated. See gentool.js. */'
 const foreignKeysOn = 'PRAGMA foreign_keys = ON;';
 const sqlFileHeader = `${generated}\n${foreignKeysOn}\n`;
 const semi = ';\n';
@@ -262,11 +232,22 @@ const main = argv => {
     });
 }
 
-main(yargs(hideBin(process.argv))
-    .usage('Usage: $0 [options]')
+yargs(hideBin(process.argv))
+    .usage('Usage: $0 <command> [options]')
+    .command('$0', 'Generate the sql data files', noop, main)
+    .command('haskell', 'Generate the Haskell library modules', {
+        db: {
+            default: './html.db',
+            desc: 'Sqlite database file'
+        },
+        'out-dir': {
+            alias: 'O',
+            default: '../lib/Html'
+        }
+    }, genHaskell)
     .version('1.0.0')
     .help('help')
-    .argv);
+    .argv;
 
 module.exports = {
     getUrl,
