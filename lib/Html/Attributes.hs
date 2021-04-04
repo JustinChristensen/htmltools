@@ -83,17 +83,17 @@ data Attribute a =
     | Muted a
     | Name a
     | NoModule a
-    | Nonce a
     | NoValidate a
+    | Nonce a
     | OnAbort a
     | OnAfterPrint a
     | OnAuxClick a
     | OnBeforePrint a
     | OnBeforeUnload a
     | OnBlur a
-    | OnCancel a
     | OnCanPlay a
     | OnCanPlayThrough a
+    | OnCancel a
     | OnChange a
     | OnClick a
     | OnClose a
@@ -123,9 +123,9 @@ data Attribute a =
     | OnKeyup a
     | OnLanguageChange a
     | OnLoad a
+    | OnLoadStart a
     | OnLoadedData a
     | OnLoadedMetaData a
-    | OnLoadStart a
     | OnMessage a
     | OnMessageError a
     | OnMouseDown a
@@ -191,9 +191,9 @@ data Attribute a =
     | Span a
     | SpellCheck a
     | Src a
-    | Srcdoc a
     | SrcLang a
     | SrcSet a
+    | Srcdoc a
     | Start a
     | Step a
     | Style a
@@ -206,7 +206,7 @@ data Attribute a =
     | Value a
     | Width a
     | Wrap a
-    deriving (Show)
+    deriving (Show, Eq, Ord)
 
 abbr, accept, acceptCharset, accessKey, action, allow, allowFullScreen, alt, as, async, autoCapitalize, autoComplete, autoFocus, autoPlay, charset, checked, cite, class_, color, cols, colspan, content, contentEditable, controls, coords, crossOrigin, data_, dateTime, decoding, default_, defer, dir, dirname, disabled, downLoad, draggable, enctype, enterKeyHint, for, form, formAction, formEnctype, formMethod, formNoValidate, formTarget, headers, height, hidden, high, href, hrefLang, httpEquiv, id, imageSizes, imageSrcSet, inputMode, integrity, is, isMap, itemId, itemProp, itemRef, itemScope, itemType, kind, label, lang, list, loading, loop, low, max, maxLength, media, method, min, minLength, multiple, muted, name, noModule, nonce, noValidate, onAbort, onAfterPrint, onAuxClick, onBeforePrint, onBeforeUnload, onBlur, onCancel, onCanPlay, onCanPlayThrough, onChange, onClick, onClose, onContextMenu, onCopy, onCueChange, onCut, onDblClick, onDrag, onDragEnd, onDragEnter, onDragLeave, onDragOver, onDragStart, onDrop, onDurationChange, onEmptied, onEnded, onError, onFocus, onFormData, onHashChange, onInput, onInvalid, onKeyDown, onKeyPress, onKeyup, onLanguageChange, onLoad, onLoadedData, onLoadedMetaData, onLoadStart, onMessage, onMessageError, onMouseDown, onMouseEnter, onMouseLeave, onMouseMove, onMouseOut, onMouseOver, onMouseUp, onOffline, onOnline, onPageHide, onPageShow, onPaste, onPause, onPlay, onPlaying, onPopState, onProgress, onRateChange, onRejectionHandled, onReset, onResize, onScroll, onSecurityPolicyViolation, onSeeked, onSeeking, onSelect, onSlotChange, onStalled, onStorage, onSubmit, onSuspend, onTimeUpdate, onToggle, onUnhandledRejection, onUnload, onVolumeChange, onWaiting, onWheel, open, optimum, pattern_, ping, placeholder, playsInline, poster, preload, readonly, referrerPolicy, rel, required, reversed, rows, rowspan, sandbox, scope, selected, shape, size, sizes, slot, span, spellCheck, src, srcdoc, srcLang, srcSet, start, step, style, tabIndex, target, title, translate, type_, useMap, value, width, wrap :: a -> Attribute a
 abbr = Abbr

@@ -1,7 +1,9 @@
 -- Generated. See gentool.js.
+{-# LANGUAGE OverloadedStrings #-}
 module Html.Elements where
 
 import Html.Attributes (Attribute)
+import Data.String (IsString)
 
 data Element a = 
       A [Attribute a] [Element a]
@@ -118,7 +120,8 @@ data Element a =
     | Var [Attribute a] [Element a]
     | Video [Attribute a] [Element a]
     | Wbr [Attribute a] [Element a]
-    deriving (Show)
+    | Text a
+    deriving (Show, Eq, Ord)
 
 a, abbr, address, area, article, aside, audio, b, base, bdi, bdo, blockquote, body, br, button, canvas, caption, cite, code, col, colgroup, data_, datalist, dd, del, details, dfn, dialog, div, dl, dt, em, embed, fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, h5, h6, head, header, hgroup, hr, html, i, iframe, img, input, ins, kbd, label, legend, li, link, main, map, mark, math, menu, meta, meter, nav, noscript, object, ol, optgroup, option, output, p, param, picture, pre, progress, q, rp, rt, ruby, s, samp, script, section, select, slot, small, source, span, strong, style, sub, summary, sup, svg, table, tbody, td, template, textarea, tfoot, th, thead, time, title, tr, track, u, ul, var, video, wbr :: [Attribute a] -> [Element a] -> Element a
 a = A
@@ -235,3 +238,123 @@ ul = Ul
 var = Var
 video = Video
 wbr = Wbr
+
+text :: a -> Element a
+text = Text
+
+elemName :: IsString a => Element a -> a
+elemName (A _ _) = "a"
+elemName (Abbr _ _) = "abbr"
+elemName (Address _ _) = "address"
+elemName (Area _ _) = "area"
+elemName (Article _ _) = "article"
+elemName (Aside _ _) = "aside"
+elemName (Audio _ _) = "audio"
+elemName (B _ _) = "b"
+elemName (Base _ _) = "base"
+elemName (Bdi _ _) = "bdi"
+elemName (Bdo _ _) = "bdo"
+elemName (Blockquote _ _) = "blockquote"
+elemName (Body _ _) = "body"
+elemName (Br _ _) = "br"
+elemName (Button _ _) = "button"
+elemName (Canvas _ _) = "canvas"
+elemName (Caption _ _) = "caption"
+elemName (Cite _ _) = "cite"
+elemName (Code _ _) = "code"
+elemName (Col _ _) = "col"
+elemName (Colgroup _ _) = "colgroup"
+elemName (Data _ _) = "data"
+elemName (Datalist _ _) = "datalist"
+elemName (Dd _ _) = "dd"
+elemName (Del _ _) = "del"
+elemName (Details _ _) = "details"
+elemName (Dfn _ _) = "dfn"
+elemName (Dialog _ _) = "dialog"
+elemName (Div _ _) = "div"
+elemName (Dl _ _) = "dl"
+elemName (Dt _ _) = "dt"
+elemName (Em _ _) = "em"
+elemName (Embed _ _) = "embed"
+elemName (Fieldset _ _) = "fieldset"
+elemName (Figcaption _ _) = "figcaption"
+elemName (Figure _ _) = "figure"
+elemName (Footer _ _) = "footer"
+elemName (Form _ _) = "form"
+elemName (H1 _ _) = "h1"
+elemName (H2 _ _) = "h2"
+elemName (H3 _ _) = "h3"
+elemName (H4 _ _) = "h4"
+elemName (H5 _ _) = "h5"
+elemName (H6 _ _) = "h6"
+elemName (Head _ _) = "head"
+elemName (Header _ _) = "header"
+elemName (Hgroup _ _) = "hgroup"
+elemName (Hr _ _) = "hr"
+elemName (Html _ _) = "html"
+elemName (I _ _) = "i"
+elemName (Iframe _ _) = "iframe"
+elemName (Img _ _) = "img"
+elemName (Input _ _) = "input"
+elemName (Ins _ _) = "ins"
+elemName (Kbd _ _) = "kbd"
+elemName (Label _ _) = "label"
+elemName (Legend _ _) = "legend"
+elemName (Li _ _) = "li"
+elemName (Link _ _) = "link"
+elemName (Main _ _) = "main"
+elemName (Map _ _) = "map"
+elemName (Mark _ _) = "mark"
+elemName (Math _ _) = "math"
+elemName (Menu _ _) = "menu"
+elemName (Meta _ _) = "meta"
+elemName (Meter _ _) = "meter"
+elemName (Nav _ _) = "nav"
+elemName (Noscript _ _) = "noscript"
+elemName (Object _ _) = "object"
+elemName (Ol _ _) = "ol"
+elemName (Optgroup _ _) = "optgroup"
+elemName (Option _ _) = "option"
+elemName (Output _ _) = "output"
+elemName (P _ _) = "p"
+elemName (Param _ _) = "param"
+elemName (Picture _ _) = "picture"
+elemName (Pre _ _) = "pre"
+elemName (Progress _ _) = "progress"
+elemName (Q _ _) = "q"
+elemName (Rp _ _) = "rp"
+elemName (Rt _ _) = "rt"
+elemName (Ruby _ _) = "ruby"
+elemName (S _ _) = "s"
+elemName (Samp _ _) = "samp"
+elemName (Script _ _) = "script"
+elemName (Section _ _) = "section"
+elemName (Select _ _) = "select"
+elemName (Slot _ _) = "slot"
+elemName (Small _ _) = "small"
+elemName (Source _ _) = "source"
+elemName (Span _ _) = "span"
+elemName (Strong _ _) = "strong"
+elemName (Style _ _) = "style"
+elemName (Sub _ _) = "sub"
+elemName (Summary _ _) = "summary"
+elemName (Sup _ _) = "sup"
+elemName (Svg _ _) = "svg"
+elemName (Table _ _) = "table"
+elemName (Tbody _ _) = "tbody"
+elemName (Td _ _) = "td"
+elemName (Template _ _) = "template"
+elemName (Textarea _ _) = "textarea"
+elemName (Tfoot _ _) = "tfoot"
+elemName (Th _ _) = "th"
+elemName (Thead _ _) = "thead"
+elemName (Time _ _) = "time"
+elemName (Title _ _) = "title"
+elemName (Tr _ _) = "tr"
+elemName (Track _ _) = "track"
+elemName (U _ _) = "u"
+elemName (Ul _ _) = "ul"
+elemName (Var _ _) = "var"
+elemName (Video _ _) = "video"
+elemName (Wbr _ _) = "wbr"
+elemName (Text _) = ""

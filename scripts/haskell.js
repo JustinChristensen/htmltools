@@ -54,12 +54,26 @@ const genList = (...items) => `[${items.flat().join(', ')}]`
 
 const genType = (vars = [], type, varsep = ' ') => `${vars.join(`,${varsep}`)} :: ${type}`
 
-const genFn = (...types) => types.flat().join(' -> ');
+const genFnType = (...types) => types.flat().join(' -> ');
+const genConstraints = (...trains) => {
+    trains = trains.flat();
+    return (trains.length === 1 ? trains[0] : `(${trains.join(', ')})`) + ' => ';
+}
 
 const genBinding = (x, y) => `${x} = ${y}`
 
+const genFunLHS = (name, ...pats) => `${name} ${pats.flat().join(' ')}`;
+
+const genParPat = (constr, ...fields) => `(${constr} ${fields.flat().join(' ')})`;
+
+const genExtensions = (...exts) => `{-# LANGUAGE ${exts.flat().join(', ')} #-}\n`;
+
+const genStr = (s = '') => `"${s}"`;
+
 const genImport = (modName, ...imports) => `import ${modName}` + 
     (imports.length ? ` (${imports.flat().join(', ')})` : '');
+
+const defaultDeriving = ['Show', 'Eq', 'Ord'];
 
 const genElementsModule = elements => {
     elements = elements.map(({ name }) => name);
@@ -68,21 +82,52 @@ const genElementsModule = elements => {
     const attrList = genList(genConstr('Attribute', 'a')),
         elemList = genList(genConstr('Element', 'a'));
 
-    return genModule(config.elemsModName, null, [
+    const newline = '';
+    
+    return genExtensions('OverloadedStrings') +
+    genModule(config.elemsModName, null, [
 
         genImport(config.attrsModName, 'Attribute'),
+        genImport('Data.String', 'IsString'),
 
-        '',
+        newline,
 
+        // data Element a
         genDataType(
             elemConstr, 
-            genConstrs(elements.map(name => 
-                genConstr(pascalCase(name), attrList, elemList))),
-            ['Show']
+            genConstrs(
+                elements.map(name => 
+                    genConstr(pascalCase(name), attrList, elemList))
+                    .sort()
+                    .concat(genConstr('Text', 'a'))
+            ),
+            defaultDeriving
         ),
 
-        genType(undrKWs(elements), genFn(attrList, elemList, elemConstr)),
-        ...elements.map(name => genBinding(undr(camelCase(name)), pascalCase(name)))
+        // a, abbr, address, ... :: [Attribute a] -> [Element a] -> Element a
+        genType(undrKWs(elements), genFnType(attrList, elemList, elemConstr)),
+        ...elements.map(name => genBinding(undr(camelCase(name)), pascalCase(name))),
+
+        newline,
+
+        // text :: a -> Element a
+        genType(['text'], genFnType('a', elemConstr)),
+        genBinding('text', 'Text'),
+
+        newline,
+
+        // elemName :: IsString a => Element a -> a
+        genType(['elemName'], genConstraints('IsString a') + genFnType(elemConstr, 'a')),
+        ...elements.map(name => genBinding(
+            genFunLHS('elemName', genParPat(pascalCase(name), '_', '_')),
+            genStr(name)
+        )),
+
+        genBinding(
+            genFunLHS('elemName', genParPat('Text', '_')),
+            genStr()
+        )
+
     ]);
 };
 
@@ -95,11 +140,11 @@ const genAttributesModule = attributes => {
 
         genDataType(
             attrConstr, 
-            genConstrs(attributes.map(name => genConstr(pascalCase(name), 'a'))),
-            ['Show']
+            genConstrs(attributes.map(name => genConstr(pascalCase(name), 'a')).sort()),
+            defaultDeriving
         ),
 
-        genType(undrKWs(attributes.map(camelCase)), genFn('a', attrConstr)),
+        genType(undrKWs(attributes.map(camelCase)), genFnType('a', attrConstr)),
         ...attributes.map(name => genBinding(undr(camelCase(name)), pascalCase(name)))
     ]);
 };
