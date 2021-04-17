@@ -13,9 +13,14 @@ common options
 
 library
     import: options
+    build-depends:
+        text ^>= 1.2.4.1
     exposed-modules:  
           Html
         , Html.Elements
         , Html.Attributes
+    other-modules:
+          Html.Internal.Elements
+        , Html.Internal.Attributes
     hs-source-dirs: lib
 

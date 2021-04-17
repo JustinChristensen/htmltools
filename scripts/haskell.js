@@ -9,6 +9,7 @@ const keywords = new Set([
     'class', 
     'default',
     'type',
+    'main',
     'pattern'
 ]);
 
@@ -47,8 +48,8 @@ const genConstr = (constr = '', ...vars) =>
 
 const genConstrs = constrs => `${indent}  ${constrs.join(`\n${indent}| `)}`
 
-const genDataType = (type, constrs, deriving = []) => `data ${type} = \n${constrs}\n`
-    + (deriving.length ? `${indent}deriving (${deriving.join(', ')})\n` : '');
+const genDataType = (type, constrs, deriving = []) => `data ${type} = \n${constrs}`
+    + (deriving.length ? `\n${indent}deriving (${deriving.join(', ')})` : '');
 
 const genList = (...items) => `[${items.flat().join(', ')}]`
 
@@ -60,6 +61,9 @@ const genConstraints = (...trains) => {
     return (trains.length === 1 ? trains[0] : `(${trains.join(', ')})`) + ' => ';
 }
 
+const genSaDeriving = (trains = '', clas, type, paren = false) => 
+    `deriving instance ${trains}${clas} ${genParen(type, paren)}`;
+
 const genBinding = (x, y) => `${x} = ${y}`
 
 const genFunLHS = (name, ...pats) => `${name} ${pats.flat().join(' ')}`;
@@ -69,27 +73,33 @@ const genParPat = (constr, ...fields) => `(${constr} ${fields.flat().join(' ')})
 const genExtensions = (...exts) => `{-# LANGUAGE ${exts.flat().join(', ')} #-}\n`;
 
 const genStr = (s = '') => `"${s}"`;
+const genParen = (s = '', p = true) => `${p ? '(' + s + ')' : s}`;
+
+const genError = s => `error ${genStr(s)}`;
 
 const genImport = (modName, ...imports) => `import ${modName}` + 
     (imports.length ? ` (${imports.flat().join(', ')})` : '');
 
-const defaultDeriving = ['Show', 'Eq', 'Ord'];
+const defaultDeriving = ['Eq', 'Ord'];
+
+const newline = '';
 
 const genElementsModule = elements => {
-    elements = elements.map(({ name }) => name);
+    elements = elements.map(({ name }) => name).sort();
 
-    const elemConstr = genConstr('Element', 'a');
-    const attrList = genList(genConstr('Attribute', 'a')),
-        elemList = genList(genConstr('Element', 'a'));
+    const elemConstr = genConstr('Element', 't', 'a');
+    const attrList = genConstr('t', genParen(genConstr('Attribute', 'a'))),
+        elemList = genConstr('t', genParen(elemConstr));
 
-    const newline = '';
-    
-    return genExtensions('OverloadedStrings') +
-    genModule(config.elemsModName, null, [
+    const extensions = genExtensions(
+        'OverloadedStrings', 
+        'StandaloneDeriving', 
+        'FlexibleInstances');
+
+    return extensions + genModule(config.elemsModName, null, [
 
         genImport(config.attrsModName, 'Attribute'),
         genImport('Data.String', 'IsString'),
-
         newline,
 
         // data Element a
@@ -97,37 +107,51 @@ const genElementsModule = elements => {
             elemConstr, 
             genConstrs(
                 elements.map(name => 
-                    genConstr(pascalCase(name), attrList, elemList))
-                    .sort()
+                    genConstr(pascalCase(name), genParen(attrList), genParen(elemList)))
                     .concat(genConstr('Text', 'a'))
-            ),
-            defaultDeriving
+            )
         ),
+        newline,
 
-        // a, abbr, address, ... :: [Attribute a] -> [Element a] -> Element a
+        genSaDeriving(genConstraints('Show a'), 'Show', genConstr('Element', '[]', 'a'), true),
+        newline,
+
+        // a, abbr, address, ... :: t (Attribute a) -> t (Element t a) -> Element t a
         genType(undrKWs(elements), genFnType(attrList, elemList, elemConstr)),
         ...elements.map(name => genBinding(undr(camelCase(name)), pascalCase(name))),
-
         newline,
 
         // text :: a -> Element a
         genType(['text'], genFnType('a', elemConstr)),
         genBinding('text', 'Text'),
-
         newline,
 
-        // elemName :: IsString a => Element a -> a
+        // elemName :: IsString a => Element t a -> a
         genType(['elemName'], genConstraints('IsString a') + genFnType(elemConstr, 'a')),
         ...elements.map(name => genBinding(
             genFunLHS('elemName', genParPat(pascalCase(name), '_', '_')),
             genStr(name)
         )),
+        genBinding(genFunLHS('elemName', genParPat('Text', '_')), genStr()),
+        newline,
 
-        genBinding(
-            genFunLHS('elemName', genParPat('Text', '_')),
-            genStr()
-        )
+        // attrs :: IsString a => Element t a -> t (Attribute a)
+        genType(['attrs'], genConstraints('IsString a') + genFnType(elemConstr, attrList)),
+        ...elements.map(name => genBinding(
+            genFunLHS('attrs', genParPat(pascalCase(name), 'as', '_')),
+            'as'
+        )),
+        genBinding(genFunLHS('attrs', genParPat('Text', '_')), genError('text nodes cannot have attributes')),
+        newline,
 
+        // elems :: IsString a => Element t a -> t (Element t a)
+        genType(['elems'], genConstraints('IsString a') + genFnType(elemConstr, elemList)),
+        ...elements.map(name => genBinding(
+            genFunLHS('elems', genParPat(pascalCase(name), '_', 'es')),
+            'es'
+        )),
+        genBinding(genFunLHS('elems', genParPat('Text', '_')), genError('text nodes cannot have child elements')),
+        newline
     ]);
 };
 
@@ -136,16 +160,39 @@ const genAttributesModule = attributes => {
 
     const attrConstr = genConstr('Attribute', 'a');
 
-    return genModule(config.attrsModName, null, [
+    const extensions = genExtensions('OverloadedStrings');
+
+    return extensions + genModule(config.attrsModName, null, [
+
+        genImport('Data.String', 'IsString'),
+        newline,
 
         genDataType(
             attrConstr, 
             genConstrs(attributes.map(name => genConstr(pascalCase(name), 'a')).sort()),
-            defaultDeriving
+            defaultDeriving.concat('Show')
         ),
+        newline,
 
         genType(undrKWs(attributes.map(camelCase)), genFnType('a', attrConstr)),
-        ...attributes.map(name => genBinding(undr(camelCase(name)), pascalCase(name)))
+        ...attributes.map(name => genBinding(undr(camelCase(name)), pascalCase(name))),
+        newline,
+
+        // attrName :: IsString a => Attribute a -> a
+        genType(['attrName'], genConstraints('IsString a') + genFnType(attrConstr, 'a')),
+        ...attributes.map(name => genBinding(
+            genFunLHS('attrName', genParPat(pascalCase(name), '_')),
+            genStr(name)
+        )),
+        newline,
+
+        // attrVal :: IsString a => Attribute a -> a
+        genType(['attrVal'], genConstraints('IsString a') + genFnType(attrConstr, 'a')),
+        ...attributes.map(name => genBinding(
+            genFunLHS('attrVal', genParPat(pascalCase(name), 'v')),
+            'v'
+        )),
+        newline,
     ]);
 };
 

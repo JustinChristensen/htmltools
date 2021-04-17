@@ -3,8 +3,11 @@ const { mkdirSync } = require('fs');
 
 const config = {
     indexUrl: 'https://html.spec.whatwg.org/multipage/indices.html',
+
     migrationsDir: 'migrations',
     tmpDir: 'tmp',
+    outDir: '../lib/Html/Internal',
+
     dropList: [
         'MathML',
         'SVG',
@@ -12,6 +15,8 @@ const config = {
         'Text',
         'form-associated custom elements'
     ],
+
+    dbFile: './html.db',
 
     // db tables 
     elementsTable: 'elements',
@@ -24,7 +29,7 @@ const config = {
     // haskell file names and module strings
     elemsHs: 'Elements.hs',
     attrsHs: 'Attributes.hs',
-    htmlModName: 'Html',
+    htmlModName: 'Html'
 };    
 
 config.dataDir = `${config.migrationsDir}/data`;
@@ -35,8 +40,8 @@ config.categoriesSqlFile = `${config.dataDir}/categories.sql`;
 config.attributesSqlFile = `${config.dataDir}/attributes.sql`;
 config.categoriesElementsSqlFile = `${config.dataDir}/categories_elements.sql`;
 
-config.elemsModName = `${config.htmlModName}.Elements`;
-config.attrsModName = `${config.htmlModName}.Attributes`;
+config.elemsModName = `${config.htmlModName}.Internal.Elements`;
+config.attrsModName = `${config.htmlModName}.Internal.Attributes`;
 
 const inDir = (path, fn) => x => (mkdirSync(path, { recursive: true }), fn(x));
 

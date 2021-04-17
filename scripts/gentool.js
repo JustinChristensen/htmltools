@@ -237,12 +237,12 @@ yargs(hideBin(process.argv))
     .command('$0', 'Generate the sql data files', noop, main)
     .command('haskell', 'Generate the Haskell library modules', {
         db: {
-            default: './html.db',
+            default: config.dbFile,
             desc: 'Sqlite database file'
         },
         'out-dir': {
             alias: 'O',
-            default: '../lib/Html'
+            default: config.outDir
         }
     }, genHaskell)
     .version('1.0.0')
