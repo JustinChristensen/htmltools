@@ -24,6 +24,10 @@ $(HASKELL_SOURCES): scripts/html.db
 repl:
 	$(CABAL) repl
 
+.PHONY: test
+test:
+	$(CABAL) test --test-show-details=direct
+
 .PHONY: clean
 clean:
 	$(CABAL) clean

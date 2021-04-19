@@ -13,8 +13,6 @@ common options
 
 library
     import: options
-    build-depends:
-        text ^>= 1.2.4.1
     exposed-modules:  
           Html
         , Html.Elements
@@ -24,3 +22,13 @@ library
         , Html.Internal.Attributes
     hs-source-dirs: lib
 
+test-suite test
+    import: options
+    type: exitcode-stdio-1.0
+    main-is: Spec.hs
+    hs-source-dirs: test
+    other-modules: Html.ElementsSpec
+    build-depends:
+          html
+        , hspec ^>= 2.7.10,
+    build-tool-depends: hspec-discover:hspec-discover ^>= 2.7.10
