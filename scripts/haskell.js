@@ -129,11 +129,6 @@ const genElementsModule = elements => {
         ...elements.map(name => genBinding(undr(camelCase(name)), ap(elemConstr, pascalCase(name)))),
         newline,
 
-        // text :: a -> Html t a
-        genType(['text'], genFnType('a', htmlConstr)),
-        genBinding('text', 'Text'),
-        newline,
-
         // tagName :: IsString a => Tag -> a
         genType(['tagName'], genConstraints('IsString a') + genFnType(tagConstr, 'a')),
         ...elements.map(name => genBinding(

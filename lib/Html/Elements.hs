@@ -2,6 +2,7 @@
 module Html.Elements (
     module Html.Internal.Elements,
     Html',
+    comment, text,
     attrs, elems,
     defaultSerializeOpts,
     serializeOpts,
@@ -37,6 +38,12 @@ serializeOpts opts@SerializeOpts{ } (Element tag as es) = foldl' plusEl startTag
 
 serialize :: (Foldable t, Semigroup a, IsString a) => Html t a -> a
 serialize = serializeOpts defaultSerializeOpts
+
+comment :: a -> Html t a
+comment = Comment
+
+text :: a -> Html t a
+text = Text
 
 attrs :: IsString a => Html t a -> t (Attribute a)
 attrs (Element _ as _) = as

@@ -247,9 +247,6 @@ var = Element Var
 video = Element Video
 wbr = Element Wbr
 
-text :: a -> Html t a
-text = Text
-
 tagName :: IsString a => Tag -> a
 tagName A = "a"
 tagName Abbr = "abbr"

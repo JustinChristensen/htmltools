@@ -1,6 +1,6 @@
 module Html.ElementsSpec (spec) where
 
-import Prelude hiding (div)
+import Prelude hiding (div, span)
 import Test.Hspec
 import Html.Elements
 import Html.Attributes (class_, href)
@@ -10,7 +10,9 @@ exampleFragment = div [class_ "container"] [
         a [class_ "btn", href "http://foo.com"] [text "click me"],
         p [class_ "quote"] [
             blockquote [] [
-                text "The quick brown fox..."
+                span [] [
+                    text "The quick brown fox..."
+                ]
             ]
         ]
     ]
