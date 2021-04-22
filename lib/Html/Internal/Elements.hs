@@ -1,5 +1,5 @@
 -- Generated. See gentool.js.
-{-# LANGUAGE OverloadedStrings, StandaloneDeriving, FlexibleInstances #-}
+{-# LANGUAGE OverloadedStrings, StandaloneDeriving, FlexibleInstances, QuantifiedConstraints #-}
 module Html.Internal.Elements where
 
 import Html.Internal.Attributes (Attribute)
@@ -120,18 +120,19 @@ data Tag =
     | Var
     | Video
     | Wbr
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Ord, Show, Read)
 
 data Html t a = 
       Element Tag (t (Attribute a)) (t (Html t a))
+    | Doctype
     | Text a
     | Comment a
 
-deriving instance Eq a => Eq (Html [] a)
-deriving instance Ord a => Ord (Html [] a)
-deriving instance Show a => Show (Html [] a)
+deriving instance (Eq a, forall b. Eq b => Eq (t b)) => Eq (Html t a)
+deriving instance (Show a, forall b. Show b => Show (t b)) => Show (Html t a)
+deriving instance (Read a, forall b. Read b => Read (t b)) => Read (Html t a)
 
-a, abbr, address, area, article, aside, audio, b, base, bdi, bdo, blockquote, body, br, button, canvas, caption, cite, code, col, colgroup, data_, datalist, dd, del, details, dfn, dialog, div, dl, dt, em, embed, fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, h5, h6, head, header, hgroup, hr, html, i, iframe, img, input, ins, kbd, label, legend, li, link, main_, map, mark, math, menu, meta, meter, nav, noscript, object, ol, optgroup, option, output, p, param, picture, pre, progress, q, rp, rt, ruby, s, samp, script, section, select, slot, small, source, span, strong, style, sub, summary, sup, svg, table, tbody, td, template, textarea, tfoot, th, thead, time, title, tr, track, u, ul, var, video, wbr :: t (Attribute a) -> t (Html t a) -> Html t a
+a, abbr, address, area, article, aside, audio, b, base, bdi, bdo, blockquote, body, br, button, canvas, caption, cite, code, col, colgroup, data_, datalist, dd, del, details, dfn, dialog, div, dl, dt, em, embed, fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, h5, h6, head, header, hgroup, hr, html, i, iframe, img, input, ins, kbd, label, legend, li, link, main_, map, mark, math, menu, meta, meter, nav, noscript, object, ol, optgroup, option, output, p, param, picture, pre, progress, q, rp, rt, ruby, s, samp, script, section, select, slot, small, source, span, strong, style, sub, summary, sup, svg, table, tbody, td, template, textarea, tfoot, th, thead, time, title, tr, track, u, ul, var, video, wbr :: IsString a => t (Attribute a) -> t (Html t a) -> Html t a
 a = Element A
 abbr = Element Abbr
 address = Element Address
@@ -246,6 +247,22 @@ ul = Element Ul
 var = Element Var
 video = Element Video
 wbr = Element Wbr
+
+area', base', br', col', embed', hr', img', input', link', meta', param', source', track', wbr' :: (IsString a, forall b. Monoid (t b)) => t (Attribute a) -> Html t a
+area' as = Element Area as mempty
+base' as = Element Base as mempty
+br' as = Element Br as mempty
+col' as = Element Col as mempty
+embed' as = Element Embed as mempty
+hr' as = Element Hr as mempty
+img' as = Element Img as mempty
+input' as = Element Input as mempty
+link' as = Element Link as mempty
+meta' as = Element Meta as mempty
+param' as = Element Param as mempty
+source' as = Element Source as mempty
+track' as = Element Track as mempty
+wbr' as = Element Wbr as mempty
 
 tagName :: IsString a => Tag -> a
 tagName A = "a"
@@ -362,3 +379,119 @@ tagName Ul = "ul"
 tagName Var = "var"
 tagName Video = "video"
 tagName Wbr = "wbr"
+
+voidElement :: Tag -> Bool
+voidElement A = False
+voidElement Abbr = False
+voidElement Address = False
+voidElement Area = True
+voidElement Article = False
+voidElement Aside = False
+voidElement Audio = False
+voidElement B = False
+voidElement Base = True
+voidElement Bdi = False
+voidElement Bdo = False
+voidElement Blockquote = False
+voidElement Body = False
+voidElement Br = True
+voidElement Button = False
+voidElement Canvas = False
+voidElement Caption = False
+voidElement Cite = False
+voidElement Code = False
+voidElement Col = True
+voidElement Colgroup = False
+voidElement Data = False
+voidElement Datalist = False
+voidElement Dd = False
+voidElement Del = False
+voidElement Details = False
+voidElement Dfn = False
+voidElement Dialog = False
+voidElement Div = False
+voidElement Dl = False
+voidElement Dt = False
+voidElement Em = False
+voidElement Embed = True
+voidElement Fieldset = False
+voidElement Figcaption = False
+voidElement Figure = False
+voidElement Footer = False
+voidElement Form = False
+voidElement H1 = False
+voidElement H2 = False
+voidElement H3 = False
+voidElement H4 = False
+voidElement H5 = False
+voidElement H6 = False
+voidElement Head = False
+voidElement Header = False
+voidElement Hgroup = False
+voidElement Hr = True
+voidElement Html = False
+voidElement I = False
+voidElement Iframe = False
+voidElement Img = True
+voidElement Input = True
+voidElement Ins = False
+voidElement Kbd = False
+voidElement Label = False
+voidElement Legend = False
+voidElement Li = False
+voidElement Link = True
+voidElement Main = False
+voidElement Map = False
+voidElement Mark = False
+voidElement Math = False
+voidElement Menu = False
+voidElement Meta = True
+voidElement Meter = False
+voidElement Nav = False
+voidElement Noscript = False
+voidElement Object = False
+voidElement Ol = False
+voidElement Optgroup = False
+voidElement Option = False
+voidElement Output = False
+voidElement P = False
+voidElement Param = True
+voidElement Picture = False
+voidElement Pre = False
+voidElement Progress = False
+voidElement Q = False
+voidElement Rp = False
+voidElement Rt = False
+voidElement Ruby = False
+voidElement S = False
+voidElement Samp = False
+voidElement Script = False
+voidElement Section = False
+voidElement Select = False
+voidElement Slot = False
+voidElement Small = False
+voidElement Source = True
+voidElement Span = False
+voidElement Strong = False
+voidElement Style = False
+voidElement Sub = False
+voidElement Summary = False
+voidElement Sup = False
+voidElement Svg = False
+voidElement Table = False
+voidElement Tbody = False
+voidElement Td = False
+voidElement Template = False
+voidElement Textarea = False
+voidElement Tfoot = False
+voidElement Th = False
+voidElement Thead = False
+voidElement Time = False
+voidElement Title = False
+voidElement Tr = False
+voidElement Track = True
+voidElement U = False
+voidElement Ul = False
+voidElement Var = False
+voidElement Video = False
+voidElement Wbr = True

@@ -24,6 +24,8 @@ const caseize = (to, str) => to(str.charAt(0)) + str.slice(1);
 const camelCase = str => caseize(toLower, capitalize(dedash(str)));
 const pascalCase = str =>  caseize(toUpper, capitalize(dedash(str)));
 
+const quotQ = s => `'${s}'`
+const eqQ = (x, y) => `${x} == ${y}`;
 const neQ = (x, y) => `${x} != ${y}`;
 const selectQ = (cols = [], table, where) => 
     `SELECT ${cols.join(', ')} FROM ${table}` + (where ? ` WHERE ${where}` : '');
@@ -34,8 +36,12 @@ const openDb = file => open({
     driver: sqlite3.Database
 });
 
-const selectElements = db => db.all(selectQ(['*'], 'elements'));
-const selectAttributes = db => db.all(selectQ(['*'], 'attributes', neQ('name', `'${config.globalAttrsName}'`)));
+const selectElements = db => 
+    db.all(selectQ(['*'], 'elements'));
+const selectAttributes = db => 
+    db.all(selectQ(['*'], 'attributes', neQ('name', quotQ(config.globalAttrsName))));
+const selectCategory = (cat, db) => 
+    db.all(selectQ(['element'], 'categories_elements', eqQ('category', quotQ(cat))));
 
 const indent = '    ';
 
@@ -43,6 +49,9 @@ const genExports = exports => exports ? `(${exports.join(',\n')}) ` : '';
 const genModule = (name = '', exports, decls = []) => 
     `module ${name} ${genExports(exports)}where\n\n${decls.join('\n')}`;
 
+// short for "apply", like f x y z
+// but since many syntactical constructs in Haskell fit that pattern
+// this is more of a general purpose token concatenator
 const ap = (...tokens) => `${tokens.flat().join(' ')}`;
 
 const genConstrs = constrs => `${indent}  ${constrs.join(`\n${indent}| `)}`
@@ -60,17 +69,17 @@ const genConstraints = (...trains) => {
     return (trains.length === 1 ? trains[0] : `(${trains.join(', ')})`) + ' => ';
 }
 
-const genSaDeriving = (trains = '', clas, type, p = false) => 
-    `deriving instance ${trains}${clas} ${paren(type, p)}`;
+const genSaDeriving = (trains = '', clas, type) => 
+    `deriving instance ${trains}${clas} ${type}`;
 
 const genBinding = (x, y) => `${x} = ${y}`
 
-const genFunLHS = (name, ...pats) => `${name} ${pats.flat().join(' ')}`;
-
 const genExtensions = (...exts) => `{-# LANGUAGE ${exts.flat().join(', ')} #-}\n`;
 
+const tick = (s = '') => `${s}'`;
 const str = (s = '') => `"${s}"`;
 const paren = (s = '', p = true) => `${p ? '(' + s + ')' : s}`;
+const forall = (...vars) => `forall ${ap(vars)}. `
 
 const genError = s => `error ${str(s)}`;
 
@@ -78,11 +87,20 @@ const genImport = (modName, ...imports) => `import ${modName}` +
     (imports.length ? ` (${imports.flat().join(', ')})` : '');
 
 const defaultDeriving = ['Eq', 'Ord'];
+const showRead = ['Show', 'Read'];
 
 const newline = '';
 
-const genElementsModule = elements => {
+const genElementsModule = (elements, voidEls) => {
     elements = elements.map(({ name }) => name).sort();
+    voidEls = voidEls.map(({ element }) => element).sort();
+
+    const genHtmlDerivings = (...classes) => classes.flat()
+        .map(clas => genSaDeriving(
+            genConstraints(`${clas} a`, forall('b') + genConstraints(`${clas} b`) + `${clas} (t b)`), 
+            clas, 
+            paren(htmlConstr)
+        ));
 
     const htmlConstr = ap('Html', 't', 'a'),
         tagConstr = 'Tag', 
@@ -93,7 +111,8 @@ const genElementsModule = elements => {
     const extensions = genExtensions(
         'OverloadedStrings', 
         'StandaloneDeriving', 
-        'FlexibleInstances');
+        'FlexibleInstances',
+        'QuantifiedConstraints');
 
     return extensions + genModule(config.elemsModName, null, [
 
@@ -104,7 +123,7 @@ const genElementsModule = elements => {
         genDataType(
             tagConstr,
             genConstrs(elements.map(name => pascalCase(name))),
-            defaultDeriving.concat('Show')
+            defaultDeriving.concat(showRead)
         ),
         newline,
 
@@ -113,27 +132,53 @@ const genElementsModule = elements => {
             htmlConstr, 
             genConstrs([
                 ap(elemConstr, tagConstr, paren(attrList), paren(elemList)),
+                ap('Doctype'),
                 ap('Text', 'a'),
                 ap('Comment', 'a')
             ])
         ),
         newline,
 
-        genSaDeriving(genConstraints('Eq a'), 'Eq', ap('Html', '[]', 'a'), true),
-        genSaDeriving(genConstraints('Ord a'), 'Ord', ap('Html', '[]', 'a'), true),
-        genSaDeriving(genConstraints('Show a'), 'Show', ap('Html', '[]', 'a'), true),
+        // TODO: Could not deduce (Ord b) arising from the superclasses of an instance declaration
+        //      which I think is https://gitlab.haskell.org/ghc/ghc/-/issues/15974
+        // ...genHtmlDerivings('Eq', 'Ord', 'Show', 'Read'),
+        ...genHtmlDerivings('Eq', 'Show', 'Read'),
         newline,
 
-        // a, abbr, address, ... :: t (Attribute a) -> t (Html t a) -> Html t a
-        genType(undrKWs(elements), genFnType(attrList, elemList, htmlConstr)),
-        ...elements.map(name => genBinding(undr(camelCase(name)), ap(elemConstr, pascalCase(name)))),
+        // a, abbr, address, ... :: IsString a => t (Attribute a) -> t (Html t a) -> Html t a
+        genType(undrKWs(elements), genConstraints('IsString a') + genFnType(attrList, elemList, htmlConstr)),
+        ...elements.map(name => 
+            genBinding(
+                undr(camelCase(name)), 
+                ap(elemConstr, pascalCase(name))
+            )
+        ),
         newline,
+
+        // meta, link, ... :: (IsString a, forall b. Monoid (t b)) => t (Attribute a) -> Html t a
+        genType(undrKWs(voidEls).map(tick), genConstraints('IsString a', forall('b') + 'Monoid (t b)') + genFnType(attrList, htmlConstr)),
+        ...voidEls.map(name => 
+            genBinding(
+                ap(tick(undr(camelCase(name))), 'as'), 
+                ap(elemConstr, pascalCase(name), 'as', 'mempty')
+            )
+        ),
+        newline,
+
 
         // tagName :: IsString a => Tag -> a
         genType(['tagName'], genConstraints('IsString a') + genFnType(tagConstr, 'a')),
         ...elements.map(name => genBinding(
-            genFunLHS('tagName', pascalCase(name)),
+            ap('tagName', pascalCase(name)),
             str(name)
+        )),
+        newline,
+
+        // voidElement :: Tag -> Bool
+        genType(['voidElement'], genFnType(tagConstr, 'Bool')),
+        ...elements.map(name => genBinding(
+            ap('voidElement', pascalCase(name)),
+            voidEls.includes(name) ? 'True' : 'False'
         )),
         newline
     ]);
@@ -154,7 +199,7 @@ const genAttributesModule = attributes => {
         genDataType(
             attrConstr, 
             genConstrs(attributes.map(name => ap(pascalCase(name), 'a')).sort()),
-            defaultDeriving.concat('Show')
+            defaultDeriving.concat(showRead)
         ),
         newline,
 
@@ -165,7 +210,7 @@ const genAttributesModule = attributes => {
         // attrName :: IsString a => Attribute a -> a
         genType(['attrName'], genConstraints('IsString a') + genFnType(attrConstr, 'a')),
         ...attributes.map(name => genBinding(
-            genFunLHS('attrName', paren(ap(pascalCase(name), '_'))),
+            ap('attrName', paren(ap(pascalCase(name), '_'))),
             str(name)
         )),
         newline,
@@ -173,7 +218,7 @@ const genAttributesModule = attributes => {
         // attrVal :: IsString a => Attribute a -> a
         genType(['attrVal'], genConstraints('IsString a') + genFnType(attrConstr, 'a')),
         ...attributes.map(name => genBinding(
-            genFunLHS('attrVal', paren(ap(pascalCase(name), 'v'))),
+            ap('attrVal', paren(ap(pascalCase(name), 'v'))),
             'v'
         )),
         newline,
@@ -182,7 +227,10 @@ const genAttributesModule = attributes => {
 
 
 module.exports = argv => openDb(argv.db).then(inDir(argv.outDir, async db => {
-    const elementsModule = genElementsModule(await selectElements(db));
+    const elementsModule = genElementsModule(
+        await selectElements(db), 
+        await selectCategory('void-elements', db)
+    );
     const attributesModule = genAttributesModule(await selectAttributes(db));
 
     const header = `-- Generated. See ${argv['$0']}.\n`

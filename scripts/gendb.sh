@@ -4,7 +4,7 @@ DB=html.db
 [[ ! -f $DB ]] && echo "creating $DB..."
 
 SQLFILES=(
-    create_schema.sql
+    schema.sql
     data/elements.sql
     data/attributes.sql
     data/categories.sql
@@ -13,6 +13,7 @@ SQLFILES=(
     elements_attributes.sql
     element_contents.sql
     category_constraints.sql
+    element_kinds.sql
 )
 
 for F in ${SQLFILES[@]}; do
